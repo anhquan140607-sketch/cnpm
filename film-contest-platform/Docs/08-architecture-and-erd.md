@@ -6,13 +6,13 @@ Phục vụ các story CNPM-28 (kiến trúc modular và chốt công nghệ) v�
 
 | Hạng mục | Đề xuất mặc định | Trạng thái |
 | --- | --- | --- |
-| Backend | Node.js (Express hoặc NestJS), REST API, Swagger | Chờ chốt |
-| Cơ sở dữ liệu | PostgreSQL | Chờ chốt |
-| Lưu ảnh | Firebase Storage, riêng tư, URL ký thời hạn | Chờ chốt |
+| Backend | Node.js (Express + TypeScript), REST API, Swagger | Đã chốt & triển khai |
+| Cơ sở dữ liệu | PostgreSQL 16 | Đã chốt & thiết kế DDL 18 bảng |
+| Lưu ảnh | Firebase Storage / Cloud Storage, riêng tư, URL ký thời hạn | Chờ cấu hình bucket |
 | Web | ReactJS / Next.js | Theo kế hoạch |
 | Mobile | Flutter (mức Should) | Theo kế hoạch |
 | AI | OpenAI API và dịch vụ Computer Vision / so sánh ảnh | Theo kế hoạch |
-| Xác thực | JWT và RBAC (4 vai trò) | Theo SRS |
+| Xác thực | JWT (Access & Refresh Token) và RBAC (4 vai trò) | Đã hoàn thành |
 
 Thiết kế dưới đây độc lập với ngôn ngữ backend và hệ quản trị cơ sở dữ liệu, nên không phải làm lại nếu nhóm chọn ASP.NET Core hoặc MySQL.
 

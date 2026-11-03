@@ -16,7 +16,7 @@ Tick an item when it is done, then commit and push this file through a pull requ
 - [ ] All 5 members invited to the Jira space; M1-M5 matched to real names and assigned in Jira (see `Docs/06-team-assignment-and-scrum.md`)
 - [ ] Jira board columns set to To Do, In Progress, In Review, Testing, Done; estimation set to Original time estimate
 - [ ] Sprint dates entered in Jira: 9/10, 23/10, 6/11, 20/11, ending 4/12/2026
-- [ ] Backend stack (ASP.NET Core or Node.js) and database (PostgreSQL or MySQL) decided
+- [x] Backend stack (Node.js Express + TypeScript) and database (PostgreSQL) decided
 
 ## Documents (Docs/)
 
@@ -30,9 +30,9 @@ Tick an item when it is done, then commit and push this file through a pull requ
 
 ## Sprint 1 (Weeks 1-2): Foundation
 
-- [ ] Architecture, database design and project setup
-- [ ] FE1 Account & Access Management (login, RBAC)
-- [ ] FE2 System & Master Data Management
+- [x] Architecture, database design and project setup
+- [x] FE1 Account & Access Management (login, RBAC)
+- [x] FE2 System & Master Data Management
 - [ ] AI proof of concept (duplicate detection)
 - [ ] Sprint review with supervisor, tag `v0.1`
 
