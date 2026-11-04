@@ -117,10 +117,11 @@
       <div class="grid-2">
         <div class="card">
           <div class="card-title">
-            <span>🏷️ [CNPM-133] Quản lý Hạng mục</span>
+            <span>🏷️ [CNPM-133] Quản lý Hạng mục & Tiêu chí chấm thi</span>
             <button class="btn btn-primary" style="font-size:0.75rem;">+ Thêm</button>
           </div>
-          <table>
+          <strong style="font-size:0.85rem; color:#475569;">1. Danh sách Hạng mục thi (Categories):</strong>
+          <table style="margin-bottom: 16px;">
             <thead>
               <tr><th>Tên hạng mục</th><th>Định dạng</th><th>Số ảnh tối đa</th></tr>
             </thead>
@@ -129,6 +130,22 @@
               <tr><td>Ảnh Màu (Color)</td><td>35mm / 120 Film</td><td>3 ảnh</td></tr>
             </tbody>
           </table>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+            <strong style="font-size:0.85rem; color:#475569;">2. Tiêu chí chấm điểm (Criteria):</strong>
+            <span class="badge badge-approved">Tổng trọng số: 100% / 100%</span>
+          </div>
+          <table>
+            <thead>
+              <tr><th>Tiêu chí</th><th>Trọng số (%)</th><th>Điểm max</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Kỹ thuật phơi sáng & xử lý hạt phim</td><td><strong>30%</strong></td><td>10.0</td></tr>
+              <tr><td>Bố cục, ánh sáng và khoảnh khắc</td><td><strong>40%</strong></td><td>10.0</td></tr>
+              <tr><td>Cảm xúc & Chiều sâu câu chuyện</td><td><strong>30%</strong></td><td>10.0</td></tr>
+            </tbody>
+          </table>
+          <p style="margin-top:10px; font-size:0.8rem; color:var(--muted);">* Thể lệ ràng buộc: Thí sinh phải nộp đủ ảnh cuộn phim đối chiếu, không can thiệp số.</p>
         </div>
 
         <div class="card">
@@ -136,6 +153,7 @@
             <span>🏆 [CNPM-134] Cấu trúc Giải thưởng</span>
             <button class="btn btn-primary" style="font-size:0.75rem;">+ Thêm</button>
           </div>
+          <strong style="font-size:0.85rem; color:#475569;">Cơ cấu giải thưởng theo hạng mục:</strong>
           <table>
             <thead>
               <tr><th>Hạng mục</th><th>Giải thưởng</th><th>Trị giá</th></tr>
@@ -144,8 +162,10 @@
               <tr><td>Đen Trắng</td><td>Giải Nhất</td><td>15,000,000 đ</td></tr>
               <tr><td>Đen Trắng</td><td>Giải Nhì</td><td>8,000,000 đ</td></tr>
               <tr><td>Toàn cuộc thi</td><td>Best of Contest</td><td>25,000,000 đ</td></tr>
+              <tr><td>Cộng đồng</td><td>Ảnh được bình chọn nhiều nhất</td><td>5,000,000 đ</td></tr>
             </tbody>
           </table>
+          <p style="margin-top:16px; font-size:0.8rem; color:var(--muted);">* Cơ cấu giải thưởng được cố định khi trạng thái cuộc thi chuyển sang OPEN.</p>
         </div>
       </div>
 
