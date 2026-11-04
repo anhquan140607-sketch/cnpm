@@ -1,10 +1,17 @@
 import { Router } from 'express';
 import { participantController } from './participant.controller.js';
-import { authenticateToken, authorizeRoles } from '../../common/middleware/auth.middleware.js';
+import { authenticateToken, authorizeRoles, optionalAuth } from '../../common/middleware/auth.middleware.js';
 
 const router = Router();
 
-// Protect all participant routes
+// Photo Upload (FE7 / CNPM-141 / CNPM-48) - Hỗ trợ cả authenticated và demo/test không cần token
+router.post(
+  '/upload',
+  optionalAuth,
+  (req, res, next) => participantController.uploadImage(req, res, next)
+);
+
+// Protect all other participant routes
 router.use(authenticateToken);
 
 // Contest Registration (FE5)

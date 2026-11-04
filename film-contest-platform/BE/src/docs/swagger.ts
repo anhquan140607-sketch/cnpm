@@ -240,6 +240,40 @@ Bao gồm xác thực JWT, phân quyền 4 vai trò (Administrator, Organizer, J
         responses: { 200: { description: 'Thành công' } },
       },
     },
+    '/participant/registrations': {
+      post: {
+        tags: ['Người tham gia - Đăng ký cuộc thi (FE5)'],
+        summary: 'Đăng ký tham gia cuộc thi và hạng mục (Participant / CNPM-44)',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['contest_id', 'category_id'],
+                properties: {
+                  contest_id: { type: 'integer', example: 1 },
+                  category_id: { type: 'integer', example: 1 },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          201: { description: 'Đăng ký tham gia cuộc thi thành công' },
+          409: { description: 'Đã đăng ký hạng mục này trong cuộc thi rồi' },
+        },
+      },
+    },
+    '/participant/registrations/my': {
+      get: {
+        tags: ['Người tham gia - Đăng ký cuộc thi (FE5)'],
+        summary: 'Xem danh sách các cuộc thi tôi đã đăng ký tham gia (Participant)',
+        responses: {
+          200: { description: 'Thành công' },
+        },
+      },
+    },
     '/participant/film-rolls': {
       get: {
         tags: ['Người tham gia - Cuộn phim & Khung hình (FE6)'],
@@ -298,6 +332,30 @@ Bao gồm xác thực JWT, phân quyền 4 vai trò (Administrator, Organizer, J
           },
         },
         responses: { 201: { description: 'Nộp bài thi thành công' } },
+      },
+    },
+    '/participant/upload': {
+      post: {
+        tags: ['Người tham gia - Nộp bài thi (FE7)'],
+        summary: 'Upload ảnh scan lên máy chủ lưu trữ (FE7 / CNPM-141)',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['image_data'],
+                properties: {
+                  filename: { type: 'string', example: 'film-scan-01.jpg' },
+                  image_data: { type: 'string', example: 'data:image/jpeg;base64,/9j/4AAQSkZJRg...' },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          201: { description: 'Upload ảnh thành công, trả về link URL' },
+        },
       },
     },
     '/judging/workspace': {

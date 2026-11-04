@@ -264,6 +264,41 @@ export class ParticipantService {
     );
     return result.rows;
   }
+
+  // FE7 / CNPM-141: Image Upload to Storage
+  async uploadImage(participantId: number, filename: string, base64Content: string) {
+    const fs = await import('fs');
+    const path = await import('path');
+    const uploadsDir = path.resolve(process.cwd(), 'uploads');
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir, { recursive: true });
+    }
+
+    const matches = base64Content.match(/^data:image\/([a-zA-Z0-9+.-]+);base64,(.+)$/);
+    let ext = 'jpg';
+    let dataBuffer: Buffer;
+
+    if (matches && matches.length === 3) {
+      ext = matches[1].replace('jpeg', 'jpg');
+      dataBuffer = Buffer.from(matches[2], 'base64');
+    } else {
+      dataBuffer = Buffer.from(base64Content, 'base64');
+    }
+
+    const cleanFilename = `scan-${Date.now()}-${Math.floor(Math.random() * 10000)}.${ext}`;
+    const filePath = path.join(uploadsDir, cleanFilename);
+    fs.writeFileSync(filePath, dataBuffer);
+
+    const fileUrl = `http://localhost:${process.env.PORT || 5000}/uploads/${cleanFilename}`;
+    await logActivity(participantId, 'UPLOAD_IMAGE', 'IMAGE', null, { filename: cleanFilename, size: dataBuffer.length });
+
+    return {
+      url: fileUrl,
+      filename: cleanFilename,
+      size: dataBuffer.length,
+      mimeType: `image/${ext}`,
+    };
+  }
 }
 
 export const participantService = new ParticipantService();

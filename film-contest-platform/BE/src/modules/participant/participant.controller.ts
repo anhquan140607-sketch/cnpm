@@ -95,6 +95,22 @@ export class ParticipantController {
       next(error);
     }
   }
+
+  // FE7 / CNPM-141: Upload ảnh scan
+  async uploadImage(req: RequestWithUser, res: Response, next: NextFunction) {
+    try {
+      const { filename, image_data } = req.body;
+      if (!image_data) {
+        sendError(res, 'Vui lòng cung cấp dữ liệu hình ảnh (base64 image_data)', 400);
+        return;
+      }
+      const userId = req.user ? req.user.id : 4;
+      const result = await participantService.uploadImage(userId, filename || 'scan.jpg', image_data);
+      sendSuccess(res, result, 'Upload ảnh lên máy chủ lưu trữ thành công', 201);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const participantController = new ParticipantController();
