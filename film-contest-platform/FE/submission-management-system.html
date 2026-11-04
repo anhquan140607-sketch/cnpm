@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống Quản lý Vòng đời & Rút Bài nộp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen p-8">
+    <div class="max-w-5xl mx-auto bg-white rounded-xl p-6 shadow-lg">
+        <h1 class="text-2xl font-bold text-indigo-900 mb-2">📥 Submission Management & Withdrawal</h1>
+        <p class="text-gray-600 mb-6">Task Jira: CNPM-50 | Theo dõi trạng thái, cập nhật metadata và rút bài nộp dự thi.</p>
+        
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-indigo-50 border-b border-indigo-100">
+                    <th class="p-3 font-semibold text-sm">Mã bài nộp</th>
+                    <th class="p-3 font-semibold text-sm">Tên tác phẩm</th>
+                    <th class="p-3 font-semibold text-sm">Trạng thái</th>
+                    <th class="p-3 font-semibold text-sm">Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="p-3 font-mono text-sm">SUB-2026-001</td>
+                    <td class="p-3 font-medium">Nắng Chiều Sài Gòn</td>
+                    <td class="p-3"><span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">Chờ duyệt AI</span></td>
+                    <td class="p-3 space-x-2">
+                        <button class="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700">Chỉnh sửa</button>
+                        <button class="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700">Rút bài</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
