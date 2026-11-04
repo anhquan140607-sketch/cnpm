@@ -1,6 +1,6 @@
 # 📚 Chỉ Mục Tài Liệu Dự Án (Docs Directory Index)
 
-Trang tổng hợp và điều hướng toàn bộ tài liệu quản lý, kiến trúc, đặc tả chức năng và kiểm thử của dự án.
+Trang tổng hợp và điều hướng toàn bộ tài liệu quản lý, kiến trúc, đặc tả chức năng, kiểm thử và liên kết mã nguồn của dự án.
 
 ---
 
@@ -25,14 +25,25 @@ Trang tổng hợp và điều hướng toàn bộ tài liệu quản lý, kiế
 * 📄 [spec-4.1-scoring-criteria.md](./spec-4.1-scoring-criteria.md) — Thiết lập tiêu chí chấm điểm có trọng số 100% (CNPM-135 / WBS 4.1)
 * 📄 [spec-4.2-film-preset-criteria.md](./spec-4.2-film-preset-criteria.md) — Bộ tiêu chí mẫu đặc thù nhiếp ảnh phim (CNPM-146 / WBS 4.2)
 * 📄 [spec-5.1-participant-profile.md](./spec-5.1-participant-profile.md) — Hồ sơ & Portfolio thí sinh (CNPM-136 / WBS 5.1)
+* 📄 [spec-7.4-submission-lifecycle.md](./spec-7.4-submission-lifecycle.md) — Quản lý vòng đời bài nộp, sửa & rút bài (CNPM-50 / CNPM-143)
 
 ---
 
-## 🔬 4. Thử Nghiệm Kỹ Thuật & AI (PoC)
+## 💻 4. Liên Kết Mã Nguồn Giao Diện & CSDL (Source Code References)
+* 🌐 **Frontend UI Mockups (`FE/`):**
+  * [`../FE/negative-contact-sheet-manager.html`](../FE/negative-contact-sheet-manager.html) — Giao diện Tham chiếu Negative & Contact Sheet (CNPM-54)
+  * [`../FE/submission-management-system.html`](../FE/submission-management-system.html) — Giao diện Quản lý & Rút bài nộp (CNPM-50)
+  * [`../FE/test-case-management-dashboard.html`](../FE/test-case-management-dashboard.html) — Dashboard Quản lý Kiểm thử (CNPM-51)
+* 🗄️ **Database Schema (`BE/`):**
+  * [`../BE/database-schema-erd.sql`](../BE/database-schema-erd.sql) — Script khởi tạo 9 bảng PostgreSQL DDL (C21-13)
+
+---
+
+## 🔬 5. Thử Nghiệm Kỹ Thuật & AI (PoC)
 * 📄 [poc-ai-image-verification.md](./poc-ai-image-verification.md) — Báo cáo PoC phát hiện ảnh trùng lặp & ảnh AI (CNPM-26 / WBS 9.1 & 9.2)
 
 ---
 
-## 📦 5. Tài Nguyên & Dữ Liệu Khác
+## 📦 6. Tài Nguyên & Dữ Liệu Khác
 * 📄 [07-sprint1-meeting-kit.md](./07-sprint1-meeting-kit.md) — Bộ tài liệu và chương trình họp hoàn thiện Sprint 1
 * 📊 [jira_tasks_film_contest.csv](./jira_tasks_film_contest.csv) — File dữ liệu import 76 công việc lên Jira

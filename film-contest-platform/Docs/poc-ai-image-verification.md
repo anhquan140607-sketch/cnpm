@@ -29,9 +29,9 @@
 - **Bước 2 (Xác nhận sâu):** Dùng mô hình CLIP (ViT-B/32) trích xuất Vector Embedding 512 chiều. Lưu trữ trong PostgreSQL sử dụng extension `pgvector` để truy vấn Cosine Similarity.
 
 ### 2.2 Kết quả đánh giá Ngưỡng (Threshold)
-- **Khoảng cách Hamming (pHash) $\le 5$:** Cảnh báo trùng lặp mức cao (Duplicate).
-- **Cosine Similarity (Vector) $\ge 0.88$:** Cảnh báo tương đồng nội dung cao (Similar).
-- *Lưu ý:* Với các khung hình liền kề trên cùng cuộn phim (có màu sắc và bố cục tương tự), Cosine Similarity duy trì ở mức $0.72 - 0.82$, không bị phát hiện nhầm ở ngưỡng $0.88$.
+- **Khoảng cách Hamming (pHash) <= 5:** Cảnh báo trùng lặp mức cao (Duplicate).
+- **Cosine Similarity (Vector) >= 0.88:** Cảnh báo tương đồng nội dung cao (Similar).
+- *Lưu ý:* Với các khung hình liền kề trên cùng cuộn phim (có màu sắc và bố cục tương tự), Cosine Similarity duy trì ở mức 0.72 - 0.82, không bị phát hiện nhầm ở ngưỡng 0.88.
 
 ---
 
@@ -39,7 +39,7 @@
 
 ### 3.1 Ứng viên & Ngưỡng đề xuất
 - **Giải pháp:** Tích hợp API dịch vụ phát hiện ảnh do AI tạo ra (Ví dụ: Sightengine / Hive Moderation API).
-- **Ngưỡng cảnh báo:** Xác suất AI $\ge 75\%$ sẽ gắn cờ "Nghi ngờ ảnh AI" để Organizer kiểm tra.
+- **Ngưỡng cảnh báo:** Xác suất AI >= 75% sẽ gắn cờ "Nghi ngờ ảnh AI" để Organizer kiểm tra.
 
 ### 3.2 Thách thức với Nhiếp ảnh Phim
 Ảnh phim scan độ phân giải cao thường có nhiễu hạt (grain) và chất mờ đặc trưng, đôi khi làm tăng điểm số xác suất AI giả lập. Do đó, việc phê duyệt cuối cùng bắt buộc phải qua duyệt thủ công của Ban tổ chức (LI13).

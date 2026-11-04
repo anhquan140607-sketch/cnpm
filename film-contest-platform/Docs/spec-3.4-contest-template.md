@@ -59,7 +59,7 @@ CREATE TABLE contest_templates (
 
 ---
 
-## 3. Thiết kế Restful API
+## 3. Thiết kế RESTful API
 
 - `POST /api/v1/contests/:id/save-as-template`: Lưu cuộc thi `:id` thành Template mới.
 - `GET /api/v1/templates`: Lấy danh sách Template của Organizer đang đăng nhập.
