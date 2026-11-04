@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilmContest.API", "FilmContest.API\FilmContest.API.csproj", "{65DD0179-7161-4744-8346-A9456801FBFD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{65DD0179-7161-4744-8346-A9456801FBFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65DD0179-7161-4744-8346-A9456801FBFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65DD0179-7161-4744-8346-A9456801FBFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65DD0179-7161-4744-8346-A9456801FBFD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
