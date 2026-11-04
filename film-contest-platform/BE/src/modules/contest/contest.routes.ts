@@ -37,4 +37,17 @@ router.post(
   (req, res, next) => contestController.addCriterion(req, res, next)
 );
 
+// Organizer review registrations (FE5 / CNPM-138)
+router.get(
+  '/:id/registrations',
+  optionalAuth,
+  (req, res, next) => contestController.getRegistrations(req, res, next)
+);
+
+router.put(
+  '/registrations/:regId/review',
+  optionalAuth,
+  (req, res, next) => contestController.reviewRegistration(req, res, next)
+);
+
 export const contestRoutes = router;

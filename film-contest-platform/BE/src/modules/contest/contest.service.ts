@@ -181,6 +181,49 @@ export class ContestService {
     await logActivity(userId, 'ADD_CRITERION', 'CRITERION', result.rows[0].id, { contestId, name: data.name, weight: data.weight });
     return result.rows[0];
   }
+
+  // FE5 / CNPM-138: Organizer duyệt hoặc từ chối đăng ký
+  async getRegistrations(contestId: number, status?: string) {
+    let queryText = `
+      SELECT r.id, r.participant_id, u.full_name as participant_name, u.email as participant_email,
+             r.contest_id, c.title as contest_title,
+             r.category_id, cat.name as category_name,
+             r.status, r.reason, r.created_at
+      FROM registrations r
+      JOIN users u ON r.participant_id = u.id
+      JOIN contests c ON r.contest_id = c.id
+      JOIN categories cat ON r.category_id = cat.id
+      WHERE r.contest_id = $1
+    `;
+    const params: any[] = [contestId];
+    if (status) {
+      params.push(status);
+      queryText += ` AND r.status = $2`;
+    }
+    queryText += ` ORDER BY r.created_at DESC`;
+    const result = await query(queryText, params);
+    return result.rows;
+  }
+
+  async reviewRegistration(organizerId: number, registrationId: number, status: string, reason?: string) {
+    const validStatuses = ['approved', 'rejected', 'pending'];
+    if (!validStatuses.includes(status)) {
+      throw { statusCode: 400, message: "Trạng thái duyệt phải là 'approved', 'rejected' hoặc 'pending'" };
+    }
+    const check = await query(`SELECT * FROM registrations WHERE id = $1`, [registrationId]);
+    if (check.rowCount === 0) {
+      throw { statusCode: 404, message: 'Không tìm thấy đơn đăng ký' };
+    }
+    const result = await query(
+      `UPDATE registrations
+       SET status = $1, reason = $2
+       WHERE id = $3
+       RETURNING *`,
+      [status, reason || null, registrationId]
+    );
+    await logActivity(organizerId, 'REVIEW_REGISTRATION', 'REGISTRATION', registrationId, { status, reason });
+    return result.rows[0];
+  }
 }
 
 export const contestService = new ContestService();

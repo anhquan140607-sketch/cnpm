@@ -240,6 +240,42 @@ Bao gồm xác thực JWT, phân quyền 4 vai trò (Administrator, Organizer, J
         responses: { 200: { description: 'Thành công' } },
       },
     },
+    '/contests/{id}/registrations': {
+      get: {
+        tags: ['Ban tổ chức - Quản lý đơn đăng ký (FE5 / CNPM-138)'],
+        summary: 'Organizer xem danh sách thí sinh đăng ký cuộc thi',
+        parameters: [
+          { name: 'id', in: 'path', required: true, schema: { type: 'integer' }, example: 1 },
+          { name: 'status', in: 'query', required: false, schema: { type: 'string', enum: ['pending', 'approved', 'rejected'] } },
+        ],
+        responses: { 200: { description: 'Lấy danh sách đăng ký thành công' } },
+      },
+    },
+    '/contests/registrations/{regId}/review': {
+      put: {
+        tags: ['Ban tổ chức - Quản lý đơn đăng ký (FE5 / CNPM-138)'],
+        summary: 'Organizer duyệt hoặc từ chối đơn đăng ký tham gia (CNPM-138)',
+        parameters: [
+          { name: 'regId', in: 'path', required: true, schema: { type: 'integer' }, example: 1 },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['status'],
+                properties: {
+                  status: { type: 'string', enum: ['approved', 'rejected'], example: 'approved' },
+                  reason: { type: 'string', example: 'Đủ điều kiện thể lệ và hồ sơ hợp lệ' },
+                },
+              },
+            },
+          },
+        },
+        responses: { 200: { description: 'Duyệt hoặc từ chối thành công' } },
+      },
+    },
     '/participant/registrations': {
       post: {
         tags: ['Người tham gia - Đăng ký cuộc thi (FE5)'],

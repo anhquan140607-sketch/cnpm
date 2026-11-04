@@ -79,6 +79,34 @@ export class ContestController {
       next(error);
     }
   }
+
+  // FE5 / CNPM-138: Organizer xem danh sách và duyệt đơn đăng ký
+  async getRegistrations(req: RequestWithUser, res: Response, next: NextFunction) {
+    try {
+      const contestId = parseInt(req.params.id, 10);
+      const status = req.query.status as string;
+      const list = await contestService.getRegistrations(contestId, status);
+      sendSuccess(res, list, 'Lấy danh sách đăng ký cuộc thi thành công');
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async reviewRegistration(req: RequestWithUser, res: Response, next: NextFunction) {
+    try {
+      const regId = parseInt(req.params.regId, 10);
+      const { status, reason } = req.body;
+      if (!status) {
+        sendError(res, 'Vui lòng cung cấp trạng thái duyệt (approved hoặc rejected)', 400);
+        return;
+      }
+      const organizerId = req.user ? req.user.id : 2; // fallback Organizer default (id=2)
+      const updated = await contestService.reviewRegistration(organizerId, regId, status, reason);
+      sendSuccess(res, updated, `Đã cập nhật trạng thái đơn đăng ký thành ${status}`);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const contestController = new ContestController();
