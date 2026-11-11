@@ -97,9 +97,71 @@ Mỗi việc chỉ tính là xong khi đạt Definition of Done: code hoặc tà
 
 Hướng dẫn đầy đủ nằm ở Docs/04-git-workflow-guide.md. Mã Jira dùng cho nhánh và commit là CNPM (ví dụ `CNPM-28: chot cong nghe`).
 
-## 6. Kết quả họp (ghi trong buổi họp)
+## 6. Biên bản kết quả họp và thống nhất nhóm (CNPM-145)
 
-- Công nghệ đã chốt: ......
-- Mốc thời gian chọn: ......
-- Người chưa làm và cam kết: ......
-- Ngày Sprint Review với giảng viên: ......
+Buổi họp toàn thể 5 thành viên nhóm diễn ra nghiêm túc với sự tham gia đầy đủ của M1-M5 dưới sự chủ trì của Scrum Master Đinh Quang Thọ. Các nội dung quan trọng đã được thống nhất 100% như sau:
+
+### 6.1. Quyết định công nghệ chính thức (Chốt cho SWP)
+- **Backend Framework:** **ASP.NET Core Web API (.NET 8)** - Đúng chuẩn chương trình môn học SWP và hướng dẫn của giảng viên. Kiến trúc phân tầng 3-Tier/Clean Architecture, tích hợp Swagger OpenAPI tại `/api/docs`.
+- **Cơ sở dữ liệu:** **PostgreSQL 16** kết hợp **Entity Framework Core 8 (EF Core)**. Đã thiết kế và ánh xạ đầy đủ 18 bảng theo bản vẽ ERD chuẩn.
+- **Xác thực & Bảo mật:** **JWT Bearer Token** kết hợp phân quyền RBAC 4 vai trò (`administrator`, `organizer`, `judge`, `participant`). Mật khẩu băm an toàn bằng thuật toán `BCrypt`.
+- **Frontend Web:** **ReactJS / Next.js** (kết hợp Tailwind CSS) dành cho cổng thông tin Ban tổ chức, Giám khảo, Thí sinh và Quản trị viên.
+- **Ứng dụng Mobile:** **Flutter** phục vụ Thí sinh khai báo cuộn phim, khung hình và chụp/nộp ảnh trực tiếp.
+- **Công nghệ AI:** Perceptual Hash (pHash) và vector embedding để phát hiện ảnh trùng lặp/tương tự (FE9). Tích hợp OpenAI API cho phân tích và gán nhãn ảnh tự động (FE14).
+- **Lưu trữ đám mây:** Cloud Storage với cơ chế URL ký có thời hạn (Signed URL) nhằm đảm bảo ảnh dự thi hoàn toàn riêng tư cho đến khi công bố triển lãm (NFR-2).
+
+### 6.2. Thống nhất mốc thời gian và kế hoạch các Sprint
+- **Sprint 1 (Tuần 1-2):** Nền tảng (Foundation) - Hoàn thành 100% kiến trúc, ERD/Schema 18 bảng, Skeleton Backend, JWT Auth, RBAC, Master Data. *(Đã nghiệm thu đạt yêu cầu)*.
+- **Sprint 2 (Tuần 3-4):** Nghiệp vụ Cuộc thi & Thí sinh (Contest & Submission) - Cấu hình cuộc thi, hạng mục, tiêu chí chấm, đăng ký tham gia, quản lý cuộn phim, khung hình, nộp bài dự thi (FE3-FE7).
+- **Sprint 3 (Tuần 5-6):** Kiểm tra bài & Chấm điểm (Verification & Judging) - Duyệt bài dự thi, kiểm tra ảnh bằng AI, phân công giám khảo, không gian chấm thi, tổng hợp điểm và xếp hạng (FE8-FE11).
+- **Sprint 4 (Tuần 7-8):** Kết quả & Đóng gói (Publication & Delivery) - Trao giải, triển lãm trực tuyến, lưu trữ số, kiểm thử UAT, đóng gói và báo cáo tổng kết (FE12-FE16).
+
+### 6.3. Phân công trách nhiệm và cam kết tiến độ
+1. **M1 - Đinh Quang Thọ (Scrum Master, Backend Lead, Maintainer):**
+   - Chịu trách nhiệm quản lý dự án, duy trì board Jira và tiến độ chung.
+   - Quản lý kho mã nguồn GitHub, phê duyệt các Pull Request vào nhánh `main`.
+   - Hoàn thành trọn vẹn phần Backend core và database của Sprint 1. Tiếp tục triển khai các API nghiệp vụ cuộc thi cho Sprint 2.
+2. **M2 - Hà Anh Quân (Frontend Web Lead):**
+   - Chịu trách nhiệm xây dựng giao diện Web Next.js.
+   - Cam kết hoàn thành Wireframe và giao diện đăng ký, quản lý hồ sơ trong Sprint 2.
+3. **M3 - Đặng Minh Hiếu (Frontend & Mobile Developer):**
+   - Phụ trách giao diện Master Data và Wireframe không gian chấm thi.
+   - Bắt đầu khởi tạo khung ứng dụng Flutter cho Mobile.
+4. **M4 - Nguyễn Minh Đạt (AI Specialist & DevOps):**
+   - Triển khai script PoC so sánh ảnh bằng pHash trên 20-30 ảnh mẫu để chọn ngưỡng similarity.
+   - Hỗ trợ cấu hình CI/CD tự động kiểm tra code khi tạo Pull Request.
+5. **M5 - Nguyễn Tấn Lộc (QA/QC & Business Analyst):**
+   - Hoàn thiện tài liệu SRS, use case chi tiết và bộ Test Cases cho các chức năng Sprint 1 & 2.
+   - Đảm bảo chất lượng tài liệu và kiểm thử API theo tiêu chí Acceptance Criteria.
+
+### 6.4. Kế hoạch vận hành và kiểm soát chất lượng
+- **Lịch họp Daily Stand-up:** 21:30 các tối Thứ Hai, Thứ Tư, Thứ Sáu qua Google Meet (thời lượng 10-15 phút).
+- **Quy tắc Git:** Tuyệt đối không commit thẳng vào `main`. Mỗi task tạo một nhánh riêng theo mã Jira `CNPM-<mã-task>-<mô-tả>`, tạo Pull Request và phải có ít nhất 1 thành viên review/approve trước khi Merge.
+- **Ngày Sprint Review & Demo với Giảng viên:** Dự kiến vào cuối Tuần 4 của môn học.
+
+
+---
+
+## 7. Quyết định của Scrum Master về điều chỉnh nhân sự & Tái phân bổ công việc
+
+- **Thời gian lập:** 19:30 ngày 04/11/2026
+- **Người ký quyết định:** Đinh Quang Thọ (Scrum Master & Trưởng nhóm, M1)
+- **Thành viên liên quan:** Đặng Minh Hiếu (M3 - minhhieu2k7777777@gmail.com)
+
+### 7.1. Lý do điều chỉnh
+Trong quá trình vận hành Sprint 1, thành viên Đặng Minh Hiếu (M3) không tham gia trao đổi, không phản hồi các thông báo quan trọng trên kênh làm việc nhóm, không tham dự các phiên họp kỹ thuật và không cập nhật trạng thái thực hiện các User Story được giao trên Jira board. Để đảm bảo tính kỷ luật của nhóm và cam kết tiến độ với Giảng viên môn học (Product Owner), Scrum Master quyết định loại thành viên Đặng Minh Hiếu khỏi nhóm dự án.
+
+### 7.2. Phương án tiếp quản & Tái phân công công việc
+Toàn bộ 6 User Story tồn đọng của M3 trong Sprint 1 được **Scrum Master Đinh Quang Thọ (M1)** chính thức tiếp quản và hoàn thiện:
+
+| Mã Jira | Tên User Story | Thời lượng gốc | Phương án thực hiện của Scrum Master |
+| --- | --- | --- | --- |
+| **CNPM-25** | [2.2] Quản lý master data | 1d 6h (14 giờ) | Hoàn thiện DB schema `master_data`, API `GET/POST /api/v1/system/master-data` và seed dữ liệu chuẩn hóa (phim, ISO, camera, lens, lab). |
+| **CNPM-31** | [17.1] Wireframe: Organizer, Judge và Admin | 3 giờ | Hoàn thành tài liệu đặc tả [organizer-judge-admin-wireframes.md](wireframes/organizer-judge-admin-wireframes.md) và Interactive HTML Prototype [prototype.html](wireframes/prototype.html). |
+| **CNPM-132** | [3.1] UI tạo và cấu hình cuộc thi (Organizer) | 8 giờ | Thiết kế Wireframe Form tạo cuộc thi, liên kết trực tiếp với API `POST /api/v1/contests` (CNPM-38). |
+| **CNPM-133** | [3.2] Quản lý hạng mục và thể lệ cuộc thi | 12 giờ | Thiết kế giao diện cấu hình hạng mục và tiêu chí chấm điểm, khớp với API `POST /api/v1/contests/:id/categories` và criteria. |
+| **CNPM-134** | [3.3] Cấu trúc giải thưởng theo hạng mục | 6 giờ | Thiết kế Wireframe cơ cấu giải thưởng khớp với bảng `awards` trong database. |
+| **CNPM-138** | [5.3] Organizer duyệt hoặc từ chối đăng ký | 6 giờ | Hiện thực hóa API `GET /api/v1/contests/:id/registrations` và `PUT /api/v1/contests/registrations/:regId/review` trong Backend, kèm giao diện duyệt đơn. |
+
+### 7.3. Cam kết kết quả nghiệm thu Sprint 1
+Nhóm cam kết chất lượng sản phẩm cuối Sprint 1 không bị suy giảm, mã nguồn Backend và tài liệu kiến trúc/Wireframe vẫn được tích hợp đồng bộ 100% trên GitHub repository và sẵn sàng trình bày trong buổi Sprint Review với Giảng viên.
