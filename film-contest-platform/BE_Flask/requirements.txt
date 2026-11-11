@@ -1,0 +1,12 @@
+Flask>=2.2.0
+Flask-Cors>=3.0.10
+SQLAlchemy>=2.0.0
+psycopg2-binary>=2.9.5
+PyMySQL>=1.0.2
+pymssql>=2.2.8
+marshmallow>=3.19.0
+python-dotenv>=1.0.0
+PyJWT>=2.8.0
+bcrypt>=4.0.1
+flasgger>=0.9.5
+flask-swagger-ui>=4.11.1

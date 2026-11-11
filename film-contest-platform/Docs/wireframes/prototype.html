@@ -7,7 +7,7 @@
   <style>
     :root {
       --primary: #1e3a8a;
-      --primary-light: #3b82f6;
+      --primary-light: #2563eb;
       --accent: #d97706;
       --bg: #f8fafc;
       --card-bg: #ffffff;
@@ -19,7 +19,7 @@
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
     body { background-color: var(--bg); color: var(--text); line-height: 1.5; }
-    header { background: #0f172a; color: white; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent); }
+    header { background: #0f172a; color: white; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent); position: sticky; top: 0; z-index: 100; }
     .brand { font-size: 1.15rem; font-weight: bold; display: flex; align-items: center; gap: 8px; }
     .brand span { color: var(--accent); }
     .nav-tabs { display: flex; gap: 8px; }
@@ -36,28 +36,54 @@
     .form-group { margin-bottom: 14px; }
     label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #475569; }
     input, select, textarea { width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.9rem; }
-    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary-light); ring: 2px rgba(59,130,246,0.2); }
-    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: none; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s ease-in-out; }
+    .btn:active { transform: scale(0.98); }
     .btn-primary { background: var(--primary); color: white; }
     .btn-primary:hover { background: #1d4ed8; }
     .btn-success { background: var(--success); color: white; }
+    .btn-success:hover { background: #15803d; }
     .btn-danger { background: var(--danger); color: white; }
+    .btn-danger:hover { background: #b91c1c; }
+    .btn-secondary { background: #e2e8f0; color: #334155; }
+    .btn-secondary:hover { background: #cbd5e1; }
     .badge { display: inline-block; padding: 3px 8px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
     .badge-pending { background: #fef3c7; color: #b45309; }
     .badge-approved { background: #dcfce7; color: #15803d; }
     .badge-rejected { background: #fee2e2; color: #b91c1c; }
     table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.88rem; }
     th { text-align: left; padding: 10px; background: #f1f5f9; color: #475569; border-bottom: 1px solid var(--border); }
-    td { padding: 10px; border-bottom: 1px solid var(--border); }
+    td { padding: 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
     tr:hover td { background: #f8fafc; }
     .wireframe-banner { background: #eff6ff; border-left: 4px solid var(--primary-light); padding: 12px 16px; margin-bottom: 20px; font-size: 0.9rem; border-radius: 0 6px 6px 0; }
+
+    /* Modal Popup Styling */
+    .modal-backdrop { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 1000; justify-content: center; align-items: center; }
+    .modal-backdrop.open { display: flex; animation: fadeIn 0.2s ease-out; }
+    .modal-box { background: white; width: 100%; max-width: 480px; border-radius: 10px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); overflow: hidden; animation: slideDown 0.2s ease-out; }
+    .modal-header { padding: 16px 20px; background: #f8fafc; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .modal-header h3 { font-size: 1.1rem; color: #0f172a; }
+    .modal-close { background: none; border: none; font-size: 1.4rem; color: #64748b; cursor: pointer; line-height: 1; }
+    .modal-close:hover { color: #0f172a; }
+    .modal-body { padding: 20px; }
+    .modal-footer { padding: 12px 20px; background: #f8fafc; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
+
+    /* Toast Notification */
+    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 2000; display: flex; flex-direction: column; gap: 8px; }
+    .toast { background: #1e293b; color: white; padding: 12px 20px; border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); font-size: 0.9rem; display: flex; align-items: center; gap: 10px; border-left: 4px solid var(--primary-light); animation: slideLeft 0.3s ease-out; }
+    .toast.success { border-left-color: var(--success); }
+    .toast.danger { border-left-color: var(--danger); }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes slideLeft { from { transform: translateX(50px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
   </style>
 </head>
 <body>
 
   <header>
     <div class="brand">
-      📷 Film Contest Management | <span>Wireframe Interactive Prototype (CNPM-31)</span>
+      📷 Film Contest Management | <span>Interactive Wireframe Prototype (CNPM-31)</span>
     </div>
     <div class="nav-tabs">
       <button class="tab-btn active" onclick="switchTab('organizer')">1. Ban tổ chức (Organizer)</button>
@@ -71,23 +97,23 @@
     <!-- 1. ORGANIZER TAB -->
     <div id="tab-organizer" class="tab-content active">
       <div class="wireframe-banner">
-        <strong>📌 Vai trò Ban tổ chức (Organizer):</strong> Đáp ứng các User Story <strong>CNPM-132</strong> (Tạo cuộc thi), <strong>CNPM-133</strong> (Hạng mục & Thể lệ), <strong>CNPM-134</strong> (Giải thưởng) và <strong>CNPM-138</strong> (Duyệt đăng ký thí sinh).
+        <strong>📌 Vai trò Ban tổ chức (Organizer):</strong> Đáp ứng các User Story <strong>CNPM-132</strong> (Tạo cuộc thi), <strong>CNPM-133</strong> (Hạng mục & Tiêu chí), <strong>CNPM-134</strong> (Giải thưởng) và <strong>CNPM-138</strong> (Duyệt đăng ký thí sinh).
       </div>
 
       <!-- Form Tạo Cuộc Thi (CNPM-132) -->
       <div class="card">
         <div class="card-title">
           <span>🏛️ [CNPM-132] Tạo & Cấu hình Cuộc thi Mới</span>
-          <span class="badge badge-approved">Trạng thái: DRAFT</span>
+          <span id="contestStatusBadge" class="badge badge-pending">Trạng thái: DRAFT</span>
         </div>
         <div class="grid-2">
           <div class="form-group">
             <label>Tên cuộc thi</label>
-            <input type="text" value="Hà Nội - Những khung hình thời gian 2026">
+            <input id="inputContestTitle" type="text" value="Hà Nội - Những khung hình thời gian 2026">
           </div>
           <div class="form-group">
             <label>Chủ đề (Theme)</label>
-            <input type="text" value="Vẻ đẹp hoài niệm của phố cổ qua ống kính máy phim">
+            <input id="inputContestTheme" type="text" value="Vẻ đẹp hoài niệm của phố cổ qua ống kính máy phim">
           </div>
         </div>
         <div class="grid-3">
@@ -106,10 +132,10 @@
         </div>
         <div class="form-group">
           <label>Thể lệ tham gia & Yêu cầu cuộn phim (SRS FR-3.1)</label>
-          <textarea rows="3">- Thí sinh phải nộp ảnh được chụp từ máy phim (35mm hoặc 120 Medium Format).&#10;- Bắt buộc khai báo mã cuộn phim (Film Roll) và khung hình (Frame) đối chiếu.</textarea>
+          <textarea rows="2">- Thí sinh phải nộp ảnh được chụp từ máy phim (35mm hoặc 120 Medium Format).&#10;- Bắt buộc khai báo mã cuộn phim (Film Roll) và khung hình (Frame) đối chiếu.</textarea>
         </div>
         <div style="display: flex; justify-content: flex-end; gap: 10px;">
-          <button class="btn btn-primary" onclick="alert('API POST /api/v1/contests được kích hoạt thành công!')">💾 Lưu cấu hình cuộc thi (CNPM-38/132)</button>
+          <button class="btn btn-primary" onclick="saveContestConfig()">💾 Lưu cấu hình cuộc thi (CNPM-38 / CNPM-132)</button>
         </div>
       </div>
 
@@ -117,15 +143,19 @@
       <div class="grid-2">
         <div class="card">
           <div class="card-title">
-            <span>🏷️ [CNPM-133] Quản lý Hạng mục & Tiêu chí chấm thi</span>
-            <button class="btn btn-primary" style="font-size:0.75rem;">+ Thêm</button>
+            <span>🏷️ [CNPM-133] Quản lý Hạng mục & Tiêu chí</span>
+            <div style="display:flex; gap:6px;">
+              <button class="btn btn-primary" style="font-size:0.75rem;" onclick="openModal('modalAddCategory')">+ Thêm Hạng mục</button>
+              <button class="btn btn-secondary" style="font-size:0.75rem;" onclick="openModal('modalAddCriteria')">+ Thêm Tiêu chí</button>
+            </div>
           </div>
+          
           <strong style="font-size:0.85rem; color:#475569;">1. Danh sách Hạng mục thi (Categories):</strong>
           <table style="margin-bottom: 16px;">
             <thead>
-              <tr><th>Tên hạng mục</th><th>Định dạng</th><th>Số ảnh tối đa</th></tr>
+              <tr><th>Tên hạng mục</th><th>Định dạng phim</th><th>Số ảnh tối đa</th></tr>
             </thead>
-            <tbody>
+            <tbody id="categoryTableBody">
               <tr><td>Ảnh Đen Trắng (B&W)</td><td>35mm ISO 100-400</td><td>5 ảnh</td></tr>
               <tr><td>Ảnh Màu (Color)</td><td>35mm / 120 Film</td><td>3 ảnh</td></tr>
             </tbody>
@@ -133,13 +163,13 @@
 
           <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
             <strong style="font-size:0.85rem; color:#475569;">2. Tiêu chí chấm điểm (Criteria):</strong>
-            <span class="badge badge-approved">Tổng trọng số: 100% / 100%</span>
+            <span id="criteriaTotalBadge" class="badge badge-approved">Tổng trọng số: 100% / 100%</span>
           </div>
           <table>
             <thead>
               <tr><th>Tiêu chí</th><th>Trọng số (%)</th><th>Điểm max</th></tr>
             </thead>
-            <tbody>
+            <tbody id="criteriaTableBody">
               <tr><td>Kỹ thuật phơi sáng & xử lý hạt phim</td><td><strong>30%</strong></td><td>10.0</td></tr>
               <tr><td>Bố cục, ánh sáng và khoảnh khắc</td><td><strong>40%</strong></td><td>10.0</td></tr>
               <tr><td>Cảm xúc & Chiều sâu câu chuyện</td><td><strong>30%</strong></td><td>10.0</td></tr>
@@ -151,14 +181,14 @@
         <div class="card">
           <div class="card-title">
             <span>🏆 [CNPM-134] Cấu trúc Giải thưởng</span>
-            <button class="btn btn-primary" style="font-size:0.75rem;">+ Thêm</button>
+            <button class="btn btn-primary" style="font-size:0.75rem;" onclick="openModal('modalAddPrize')">+ Thêm Giải thưởng</button>
           </div>
           <strong style="font-size:0.85rem; color:#475569;">Cơ cấu giải thưởng theo hạng mục:</strong>
           <table>
             <thead>
               <tr><th>Hạng mục</th><th>Giải thưởng</th><th>Trị giá</th></tr>
             </thead>
-            <tbody>
+            <tbody id="prizeTableBody">
               <tr><td>Đen Trắng</td><td>Giải Nhất</td><td>15,000,000 đ</td></tr>
               <tr><td>Đen Trắng</td><td>Giải Nhì</td><td>8,000,000 đ</td></tr>
               <tr><td>Toàn cuộc thi</td><td>Best of Contest</td><td>25,000,000 đ</td></tr>
@@ -177,27 +207,38 @@
         </div>
         <table>
           <thead>
-            <tr><th>Mã đơn</th><th>Họ tên thí sinh</th><th>Email</th><th>Hạng mục</th><th>Trạng thái</th><th>Thao tác</th></tr>
+            <tr><th>Mã đơn</th><th>Họ tên thí sinh</th><th>Email</th><th>Hạng mục</th><th>Trạng thái</th><th>Thao tác phê duyệt</th></tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>#1</td>
+          <tbody id="registrationTableBody">
+            <tr id="regRow1">
+              <td>#101</td>
               <td><strong>Nguyễn Văn A</strong></td>
               <td>participant@filmcontest.vn</td>
               <td>Ảnh Đen Trắng</td>
-              <td><span class="badge badge-pending">PENDING</span></td>
-              <td>
-                <button class="btn btn-success" style="padding:4px 8px; font-size:0.75rem;" onclick="alert('Đã duyệt đơn đăng ký #1 thành công! Trạng thái: APPROVED')">✓ Duyệt (Approved)</button>
-                <button class="btn btn-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="alert('Đã từ chối đơn #1. Lý do: Thiếu ảnh cuộn phim đối chiếu.')">✗ Từ chối</button>
+              <td><span id="badgeReg1" class="badge badge-pending">PENDING</span></td>
+              <td id="actionReg1">
+                <button class="btn btn-success" style="padding:4px 10px; font-size:0.78rem;" onclick="approveRegistration(101)">✓ Duyệt (Approved)</button>
+                <button class="btn btn-danger" style="padding:4px 10px; font-size:0.78rem;" onclick="openRejectModal(101, 'Nguyễn Văn A')">✗ Từ chối</button>
               </td>
             </tr>
-            <tr>
-              <td>#2</td>
+            <tr id="regRow2">
+              <td>#102</td>
               <td><strong>Trần Thị Thảo</strong></td>
               <td>thaotran@gmail.com</td>
               <td>Ảnh Màu</td>
-              <td><span class="badge badge-approved">APPROVED</span></td>
-              <td><span style="color:var(--muted); font-size:0.8rem;">Đã phê duyệt</span></td>
+              <td><span id="badgeReg2" class="badge badge-approved">APPROVED</span></td>
+              <td><span style="color:var(--success); font-weight:600; font-size:0.8rem;">✓ Đã phê duyệt</span></td>
+            </tr>
+            <tr id="regRow3">
+              <td>#103</td>
+              <td><strong>Lê Hoàng Long</strong></td>
+              <td>longle@filmphoto.vn</td>
+              <td>Ảnh Đen Trắng</td>
+              <td><span id="badgeReg3" class="badge badge-pending">PENDING</span></td>
+              <td id="actionReg3">
+                <button class="btn btn-success" style="padding:4px 10px; font-size:0.78rem;" onclick="approveRegistration(103)">✓ Duyệt (Approved)</button>
+                <button class="btn btn-danger" style="padding:4px 10px; font-size:0.78rem;" onclick="openRejectModal(103, 'Lê Hoàng Long')">✗ Từ chối</button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -231,25 +272,25 @@
             <h4 style="margin-bottom:12px; color:var(--primary);">Phiếu chấm điểm theo tiêu chí:</h4>
             <div class="form-group">
               <label>1. Kỹ thuật phơi sáng & xử lý hạt phim (Trọng số 30%)</label>
-              <input type="number" value="8.5" min="0" max="10" step="0.5">
+              <input id="score1" type="number" value="8.5" min="0" max="10" step="0.5" onchange="calcTotalScore()">
             </div>
             <div class="form-group">
               <label>2. Bố cục, ánh sáng và góc máy (Trọng số 40%)</label>
-              <input type="number" value="9.0" min="0" max="10" step="0.5">
+              <input id="score2" type="number" value="9.0" min="0" max="10" step="0.5" onchange="calcTotalScore()">
             </div>
             <div class="form-group">
               <label>3. Chiều sâu cảm xúc & tính thời điểm (Trọng số 30%)</label>
-              <input type="number" value="8.0" min="0" max="10" step="0.5">
+              <input id="score3" type="number" value="8.0" min="0" max="10" step="0.5" onchange="calcTotalScore()">
             </div>
             <div style="background:#f1f5f9; padding:12px; border-radius:6px; margin: 16px 0;">
-              <strong>Điểm tổng hợp: </strong> <span style="font-size:1.3rem; color:var(--primary); font-weight:bold;">8.55 / 10.0</span>
+              <strong>Điểm tổng hợp: </strong> <span id="totalScoreText" style="font-size:1.3rem; color:var(--primary); font-weight:bold;">8.55 / 10.0</span>
             </div>
             <div class="form-group">
               <label>Nhận xét chuyên môn của Giám khảo</label>
-              <textarea rows="3">Tương phản vùng tối rất tốt, bắt trọn khoảnh khắc người đạp xe trên phố mờ sương.</textarea>
+              <textarea id="judgeComment" rows="2">Tương phản vùng tối rất tốt, bắt trọn khoảnh khắc người đạp xe trên phố mờ sương.</textarea>
             </div>
             <div style="display:flex; justify-content:flex-end; gap:8px;">
-              <button class="btn btn-primary" onclick="alert('Đã lưu bảng điểm đánh giá của Giám khảo!')">Gửi kết quả chấm điểm</button>
+              <button class="btn btn-primary" onclick="submitJudgeScore()">Gửi kết quả chấm điểm</button>
             </div>
           </div>
         </div>
@@ -264,24 +305,24 @@
       <div class="card">
         <div class="card-title">
           <span>🗄️ [CNPM-25] Danh mục Dữ liệu dùng chung (Master Data)</span>
-          <button class="btn btn-primary" onclick="alert('Mở modal thêm mục Master Data mới')">+ Thêm danh mục mới</button>
+          <button class="btn btn-primary" onclick="openModal('modalAddMasterData')">+ Thêm Master Data mới</button>
         </div>
         <div style="display:flex; gap:8px; margin-bottom:16px;">
-          <button class="btn btn-primary" style="font-size:0.8rem;">film_brand (Hãng)</button>
-          <button class="btn" style="background:#e2e8f0; font-size:0.8rem;">film_stock (Dòng phim)</button>
-          <button class="btn" style="background:#e2e8f0; font-size:0.8rem;">iso (Độ nhạy sáng)</button>
-          <button class="btn" style="background:#e2e8f0; font-size:0.8rem;">camera (Máy ảnh)</button>
-          <button class="btn" style="background:#e2e8f0; font-size:0.8rem;">lab (Lab tráng)</button>
+          <button class="btn btn-primary" style="font-size:0.8rem;">film_brand (Hãng phim)</button>
+          <button class="btn btn-secondary" style="font-size:0.8rem;" onclick="filterMasterData('film_stock')">film_stock</button>
+          <button class="btn btn-secondary" style="font-size:0.8rem;" onclick="filterMasterData('iso')">iso</button>
+          <button class="btn btn-secondary" style="font-size:0.8rem;" onclick="filterMasterData('camera')">camera</button>
+          <button class="btn btn-secondary" style="font-size:0.8rem;" onclick="filterMasterData('lab')">lab</button>
         </div>
         <table>
           <thead>
             <tr><th>ID</th><th>Loại danh mục</th><th>Giá trị (Value)</th><th>Mô tả</th><th>Trạng thái</th><th>Thao tác</th></tr>
           </thead>
-          <tbody>
-            <tr><td>1</td><td>film_brand</td><td><strong>Kodak</strong></td><td>Eastman Kodak Company (USA)</td><td><span class="badge badge-approved">Active</span></td><td>[Sửa] [Ẩn]</td></tr>
-            <tr><td>2</td><td>film_brand</td><td><strong>Fujifilm</strong></td><td>Fujifilm Holdings Corporation (Nhật Bản)</td><td><span class="badge badge-approved">Active</span></td><td>[Sửa] [Ẩn]</td></tr>
-            <tr><td>3</td><td>film_brand</td><td><strong>Ilford</strong></td><td>Harman Technology (Chuyên phim đen trắng)</td><td><span class="badge badge-approved">Active</span></td><td>[Sửa] [Ẩn]</td></tr>
-            <tr><td>4</td><td>film_brand</td><td><strong>Cinestill</strong></td><td>Phim điện ảnh chuyển đổi sang máy ảnh chụp tĩnh</td><td><span class="badge badge-approved">Active</span></td><td>[Sửa] [Ẩn]</td></tr>
+          <tbody id="masterDataTableBody">
+            <tr><td>1</td><td>film_brand</td><td><strong>Kodak</strong></td><td>Eastman Kodak Company (USA)</td><td><span class="badge badge-approved">Active</span></td><td><button class="btn btn-secondary" style="padding:2px 8px; font-size:0.75rem;" onclick="showToast('Đã sửa', 'success')">Sửa</button></td></tr>
+            <tr><td>2</td><td>film_brand</td><td><strong>Fujifilm</strong></td><td>Fujifilm Holdings Corporation (Nhật Bản)</td><td><span class="badge badge-approved">Active</span></td><td><button class="btn btn-secondary" style="padding:2px 8px; font-size:0.75rem;" onclick="showToast('Đã sửa', 'success')">Sửa</button></td></tr>
+            <tr><td>3</td><td>film_brand</td><td><strong>Ilford</strong></td><td>Harman Technology (Chuyên phim đen trắng)</td><td><span class="badge badge-approved">Active</span></td><td><button class="btn btn-secondary" style="padding:2px 8px; font-size:0.75rem;" onclick="showToast('Đã sửa', 'success')">Sửa</button></td></tr>
+            <tr><td>4</td><td>film_brand</td><td><strong>Cinestill</strong></td><td>Phim điện ảnh chuyển đổi sang máy ảnh chụp tĩnh</td><td><span class="badge badge-approved">Active</span></td><td><button class="btn btn-secondary" style="padding:2px 8px; font-size:0.75rem;" onclick="showToast('Đã sửa', 'success')">Sửa</button></td></tr>
           </tbody>
         </table>
       </div>
@@ -289,7 +330,160 @@
 
   </div>
 
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- Modal 1: Thêm Hạng Mục -->
+  <div id="modalAddCategory" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>+ Thêm Hạng mục thi mới (CNPM-133)</h3>
+        <button class="modal-close" onclick="closeModal('modalAddCategory')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Tên hạng mục thi</label>
+          <input id="newCatName" type="text" placeholder="Ví dụ: Ảnh Đường phố & Đời thường">
+        </div>
+        <div class="form-group">
+          <label>Định dạng phim áp dụng</label>
+          <input id="newCatFormat" type="text" placeholder="Ví dụ: Phim 35mm hoặc 120 mọi loại ISO">
+        </div>
+        <div class="form-group">
+          <label>Số lượng ảnh tối đa mỗi thí sinh</label>
+          <input id="newCatLimit" type="number" value="4" min="1" max="10">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modalAddCategory')">Hủy bỏ</button>
+        <button class="btn btn-primary" onclick="submitAddCategory()">Lưu Hạng mục</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Thêm Tiêu Chí Chấm -->
+  <div id="modalAddCriteria" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>+ Thêm Tiêu chí chấm điểm (CNPM-133)</h3>
+        <button class="modal-close" onclick="closeModal('modalAddCriteria')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Tên tiêu chí</label>
+          <input id="newCritName" type="text" placeholder="Ví dụ: Tính sáng tạo và khoảnh khắc">
+        </div>
+        <div class="form-group">
+          <label>Trọng số tiêu chí (%)</label>
+          <input id="newCritWeight" type="number" value="20" min="1" max="100">
+        </div>
+        <div class="form-group">
+          <label>Thang điểm tối đa</label>
+          <input id="newCritMax" type="number" value="10" step="0.5">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modalAddCriteria')">Hủy bỏ</button>
+        <button class="btn btn-primary" onclick="submitAddCriteria()">Lưu Tiêu chí</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Thêm Giải Thưởng -->
+  <div id="modalAddPrize" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>+ Thêm Cơ cấu Giải thưởng (CNPM-134)</h3>
+        <button class="modal-close" onclick="closeModal('modalAddPrize')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Hạng mục áp dụng</label>
+          <select id="newPrizeCategory">
+            <option value="Đen Trắng">Ảnh Đen Trắng</option>
+            <option value="Ảnh Màu">Ảnh Màu</option>
+            <option value="Toàn cuộc thi">Toàn cuộc thi (Grand Prize)</option>
+            <option value="Cộng đồng">Giải Bình chọn</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tên giải thưởng</label>
+          <input id="newPrizeTitle" type="text" placeholder="Ví dụ: Giải Ba">
+        </div>
+        <div class="form-group">
+          <label>Trị giá giải thưởng</label>
+          <input id="newPrizeAmount" type="text" placeholder="Ví dụ: 3,000,000 đ + Cup">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modalAddPrize')">Hủy bỏ</button>
+        <button class="btn btn-primary" onclick="submitAddPrize()">Lưu Giải thưởng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Từ chối Đơn đăng ký (CNPM-138) -->
+  <div id="modalRejectReg" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="color:var(--danger);">✗ Từ chối đơn đăng ký (CNPM-138)</h3>
+        <button class="modal-close" onclick="closeModal('modalRejectReg')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-bottom:12px; font-size:0.9rem;">Thí sinh: <strong id="rejectParticipantName">--</strong> (Mã đơn: <span id="rejectRegId">--</span>)</p>
+        <div class="form-group">
+          <label>Lý do từ chối (Gửi thông báo về email thí sinh)</label>
+          <textarea id="rejectReasonInput" rows="3" placeholder="Nhập lý do (ví dụ: Thiếu ảnh cuộn phim đối chiếu, ảnh scan không đúng định dạng quy định)..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modalRejectReg')">Hủy bỏ</button>
+        <button class="btn btn-danger" onclick="submitRejectRegistration()">Xác nhận Từ chối</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 5: Thêm Master Data (CNPM-25) -->
+  <div id="modalAddMasterData" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>+ Thêm Master Data mới (CNPM-25)</h3>
+        <button class="modal-close" onclick="closeModal('modalAddMasterData')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Phân loại (Type)</label>
+          <select id="newMdType">
+            <option value="film_brand">film_brand (Hãng phim)</option>
+            <option value="film_stock">film_stock (Dòng phim)</option>
+            <option value="iso">iso (Độ nhạy sáng)</option>
+            <option value="camera">camera (Máy ảnh)</option>
+            <option value="lens">lens (Ống kính)</option>
+            <option value="lab">lab (Lab tráng phim)</option>
+            <option value="scanner">scanner (Máy scan phim)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Giá trị (Value)</label>
+          <input id="newMdValue" type="text" placeholder="Ví dụ: Leica M6 hoặc Kodak Portra 400">
+        </div>
+        <div class="form-group">
+          <label>Mô tả chi tiết</label>
+          <input id="newMdDesc" type="text" placeholder="Mô tả thông số hoặc nhà sản xuất">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modalAddMasterData')">Hủy bỏ</button>
+        <button class="btn btn-primary" onclick="submitAddMasterData()">Lưu vào Hệ thống</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- ==================== JAVASCRIPT ==================== -->
   <script>
+    // Tab switching
     function switchTab(tab) {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -303,6 +497,164 @@
         document.querySelectorAll('.tab-btn')[2].classList.add('active');
         document.getElementById('tab-admin').classList.add('active');
       }
+    }
+
+    // Modal helpers
+    function openModal(id) {
+      document.getElementById(id).classList.add('open');
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    // Toast notification
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `<span>${type === 'success' ? '✅' : '⚠️'}</span> <div>${message}</div>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // 1. Save Contest Config (CNPM-132)
+    function saveContestConfig() {
+      const title = document.getElementById('inputContestTitle').value;
+      const badge = document.getElementById('contestStatusBadge');
+      badge.className = 'badge badge-approved';
+      badge.innerText = 'Trạng thái: ĐÃ LƯU (OPEN)';
+      showToast(`Đã lưu thành công cấu hình cuộc thi: "${title}" vào hệ thống!`, 'success');
+    }
+
+    // 2. Add Category (CNPM-133)
+    function submitAddCategory() {
+      const name = document.getElementById('newCatName').value.trim();
+      const format = document.getElementById('newCatFormat').value.trim() || '35mm / 120 Film';
+      const limit = document.getElementById('newCatLimit').value || 3;
+      if (!name) {
+        alert('Vui lòng nhập tên hạng mục thi!');
+        return;
+      }
+      const tbody = document.getElementById('categoryTableBody');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td><strong>${name}</strong></td><td>${format}</td><td>${limit} ảnh</td>`;
+      tbody.appendChild(tr);
+      closeModal('modalAddCategory');
+      document.getElementById('newCatName').value = '';
+      showToast(`Đã thêm mới hạng mục: "${name}"`, 'success');
+    }
+
+    // 3. Add Criteria (CNPM-133)
+    function submitAddCriteria() {
+      const name = document.getElementById('newCritName').value.trim();
+      const weight = document.getElementById('newCritWeight').value || 20;
+      const maxScore = document.getElementById('newCritMax').value || 10.0;
+      if (!name) {
+        alert('Vui lòng nhập tên tiêu chí!');
+        return;
+      }
+      const tbody = document.getElementById('criteriaTableBody');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${name}</td><td><strong>${weight}%</strong></td><td>${maxScore}</td>`;
+      tbody.appendChild(tr);
+      closeModal('modalAddCriteria');
+      document.getElementById('newCritName').value = '';
+      showToast(`Đã thêm mới tiêu chí chấm: "${name}" (${weight}%)`, 'success');
+    }
+
+    // 4. Add Prize (CNPM-134)
+    function submitAddPrize() {
+      const cat = document.getElementById('newPrizeCategory').value;
+      const title = document.getElementById('newPrizeTitle').value.trim();
+      const amount = document.getElementById('newPrizeAmount').value.trim() || '5,000,000 đ';
+      if (!title) {
+        alert('Vui lòng nhập tên giải thưởng!');
+        return;
+      }
+      const tbody = document.getElementById('prizeTableBody');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${cat}</td><td><strong>${title}</strong></td><td>${amount}</td>`;
+      tbody.appendChild(tr);
+      closeModal('modalAddPrize');
+      document.getElementById('newPrizeTitle').value = '';
+      showToast(`Đã thêm giải thưởng: "${title}" (${cat})`, 'success');
+    }
+
+    // 5. Approve Registration (CNPM-138)
+    function approveRegistration(regId) {
+      let badge = document.getElementById(regId === 101 ? 'badgeReg1' : 'badgeReg3');
+      let actionTd = document.getElementById(regId === 101 ? 'actionReg1' : 'actionReg3');
+      badge.className = 'badge badge-approved';
+      badge.innerText = 'APPROVED';
+      actionTd.innerHTML = `<span style="color:var(--success); font-weight:600; font-size:0.8rem;">✓ Đã phê duyệt</span>`;
+      showToast(`Đã duyệt đơn đăng ký #${regId} thành công (Trạng thái: APPROVED)!`, 'success');
+    }
+
+    // 6. Reject Registration (CNPM-138)
+    let currentRejectId = null;
+    function openRejectModal(regId, name) {
+      currentRejectId = regId;
+      document.getElementById('rejectRegId').innerText = '#' + regId;
+      document.getElementById('rejectParticipantName').innerText = name;
+      document.getElementById('rejectReasonInput').value = 'Thiếu cuộn phim đối chiếu và không đạt tiêu chuẩn độ phân giải scan.';
+      openModal('modalRejectReg');
+    }
+
+    function submitRejectRegistration() {
+      const reason = document.getElementById('rejectReasonInput').value.trim();
+      if (!reason) {
+        alert('Vui lòng nhập lý do từ chối đơn đăng ký!');
+        return;
+      }
+      let badge = document.getElementById(currentRejectId === 101 ? 'badgeReg1' : 'badgeReg3');
+      let actionTd = document.getElementById(currentRejectId === 101 ? 'actionReg1' : 'actionReg3');
+      badge.className = 'badge badge-rejected';
+      badge.innerText = 'REJECTED';
+      actionTd.innerHTML = `<span style="color:var(--danger); font-weight:600; font-size:0.8rem;">✗ Đã từ chối (${reason.substring(0, 20)}...)</span>`;
+      closeModal('modalRejectReg');
+      showToast(`Đã từ chối đơn đăng ký #${currentRejectId}. Phản hồi đã được gửi về email thí sinh.`, 'danger');
+    }
+
+    // 7. Judge Scoring (CNPM-31)
+    function calcTotalScore() {
+      const s1 = parseFloat(document.getElementById('score1').value) || 0;
+      const s2 = parseFloat(document.getElementById('score2').value) || 0;
+      const s3 = parseFloat(document.getElementById('score3').value) || 0;
+      const total = (s1 * 0.3) + (s2 * 0.4) + (s3 * 0.3);
+      document.getElementById('totalScoreText').innerText = total.toFixed(2) + ' / 10.0';
+    }
+
+    function submitJudgeScore() {
+      calcTotalScore();
+      const score = document.getElementById('totalScoreText').innerText;
+      showToast(`Đã nộp bảng điểm ${score} của Giám khảo thành công!`, 'success');
+    }
+
+    // 8. Add Master Data (CNPM-25)
+    function submitAddMasterData() {
+      const type = document.getElementById('newMdType').value;
+      const val = document.getElementById('newMdValue').value.trim();
+      const desc = document.getElementById('newMdDesc').value.trim() || 'Dữ liệu mới thêm';
+      if (!val) {
+        alert('Vui lòng nhập giá trị Master Data!');
+        return;
+      }
+      const tbody = document.getElementById('masterDataTableBody');
+      const tr = document.createElement('tr');
+      const id = tbody.children.length + 1;
+      tr.innerHTML = `<td>${id}</td><td>${type}</td><td><strong>${val}</strong></td><td>${desc}</td><td><span class="badge badge-approved">Active</span></td><td><button class="btn btn-secondary" style="padding:2px 8px; font-size:0.75rem;">Sửa</button></td>`;
+      tbody.appendChild(tr);
+      closeModal('modalAddMasterData');
+      document.getElementById('newMdValue').value = '';
+      showToast(`Đã thêm mới Master Data: [${type}] ${val}`, 'success');
+    }
+
+    function filterMasterData(typeName) {
+      showToast(`Lọc danh mục: ${typeName}`, 'success');
     }
   </script>
 </body>
