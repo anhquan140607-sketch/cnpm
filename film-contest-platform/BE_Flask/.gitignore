@@ -1,9 +1,10 @@
 
+# Environment variables - never commit secrets
 .env
-__pycache__/
-*.pyc
+.env.*
+!.env.example
 
-# Python virtual environment
+# Python virtual environments
 .venv/
 venv/
 
@@ -15,10 +16,6 @@ __pycache__/
 test_images/
 test_fe141.py
 
-# Environment variables
-.env
-.env.*
-!.env.example
 # Visual Studio local settings
 .vs/
 
