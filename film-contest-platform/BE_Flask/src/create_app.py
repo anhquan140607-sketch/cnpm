@@ -8,6 +8,7 @@ from src.api.controllers.auth_controller import auth_bp
 from src.api.controllers.contest_controller import contest_bp
 from src.api.controllers.master_data_controller import master_data_bp
 from src.api.controllers.participant_controller import participant_bp
+from src.api.controllers.ai_keyword_controller import ai_keyword_bp
 from src.api.responses import error_response
 from src.domain.exceptions import AppException
 
@@ -20,6 +21,7 @@ def create_app():
     app.register_blueprint(contest_bp)
     app.register_blueprint(master_data_bp)
     app.register_blueprint(participant_bp)
+    app.register_blueprint(ai_keyword_bp)
 
     # 2. Phục vụ thư mục upload ảnh tĩnh
     upload_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'uploads')

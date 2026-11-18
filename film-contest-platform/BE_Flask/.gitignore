@@ -3,3 +3,25 @@
 __pycache__/
 *.pyc
 
+# Python virtual environment
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Personal testing files
+test_images/
+test_fe141.py
+
+# Environment variables
+.env
+.env.*
+!.env.example
+# Visual Studio local settings
+.vs/
+
+# Postman local data
+.postman/
+postman/

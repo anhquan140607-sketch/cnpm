@@ -2,6 +2,9 @@
 import os
 import base64
 import mimetypes
+import json
+
+from PIL import Image, UnidentifiedImageError
 
 
 class KeywordGenerationError(Exception):
@@ -14,12 +17,20 @@ class _ImageValidator:
 
     MAX_SIZE = 20 * 1024 * 1024
 
-    ALLOWED_EXTENSIONS = {
-        ".jpg", ".jpeg", ".png", ".webp", ".gif"
+    ALLOWED_FORMATS = {
+        "JPEG": ("image/jpeg", {".jpg", ".jpeg"}),
+        "PNG": ("image/png", {".png"}),
+        "WEBP": ("image/webp", {".webp"}),
+        "GIF": ("image/gif", {".gif"})
     }
 
     @classmethod
     def validate(cls, image_path):
+        if not isinstance(image_path, (str, os.PathLike)):
+            raise KeywordGenerationError(
+                "Đường dẫn ảnh không hợp lệ."
+            )
+
         if not os.path.isfile(image_path):
             raise KeywordGenerationError(
                 "Không tìm thấy file ảnh."
@@ -27,7 +38,12 @@ class _ImageValidator:
 
         extension = os.path.splitext(image_path)[1].lower()
 
-        if extension not in cls.ALLOWED_EXTENSIONS:
+        if not any(
+            extension in extensions
+            for extensions in (
+                item[1] for item in cls.ALLOWED_FORMATS.values()
+            )
+        ):
             raise KeywordGenerationError(
                 "Định dạng ảnh không được hỗ trợ."
             )
@@ -44,17 +60,42 @@ class _ImageValidator:
                 "Ảnh vượt quá dung lượng 20MB."
             )
 
-        mime_type, _ = mimetypes.guess_type(image_path)
+        try:
+            with Image.open(image_path) as image:
+                image_format = image.format
 
-        if not mime_type or not mime_type.startswith("image/"):
+                if image_format not in cls.ALLOWED_FORMATS:
+                    raise KeywordGenerationError(
+                        "Định dạng ảnh không được hỗ trợ."
+                    )
+
+                expected_mime, allowed_extensions = (
+                    cls.ALLOWED_FORMATS[image_format]
+                )
+
+                if extension not in allowed_extensions:
+                    raise KeywordGenerationError(
+                        "Phần mở rộng file không khớp với nội dung ảnh."
+                    )
+
+                image.verify()
+
+            mime_type, _ = mimetypes.guess_type(image_path)
+
+            if mime_type != expected_mime:
+                raise KeywordGenerationError(
+                    "Định dạng ảnh không hợp lệ."
+                )
+
+            with open(image_path, "rb") as image_file:
+                image_data = image_file.read()
+
+        except (UnidentifiedImageError, OSError, SyntaxError):
             raise KeywordGenerationError(
-                "Không xác định được định dạng ảnh."
+                "File không phải ảnh hợp lệ hoặc ảnh bị hỏng."
             )
 
-        with open(image_path, "rb") as image_file:
-            image_data = image_file.read()
-
-        return image_data, mime_type
+        return image_data, expected_mime
 
 
 class DemoKeywordGenerator:
@@ -73,9 +114,13 @@ class DemoKeywordGenerator:
                 "Ngôn ngữ chỉ hỗ trợ vi hoặc en."
             )
 
-        if not isinstance(keyword_count, int) or not 1 <= keyword_count <= 15:
+        if (
+            isinstance(keyword_count, bool)
+            or not isinstance(keyword_count, int)
+            or not 1 <= keyword_count <= 20
+        ):
             raise KeywordGenerationError(
-                "Số lượng từ khóa phải từ 1 đến 15."
+                "Số lượng từ khóa phải từ 1 đến 20."
             )
 
         if language == "vi":
@@ -141,6 +186,7 @@ class AIKeywordGenerator:
 
         try:
             from openai import OpenAI
+
             self.client = OpenAI(api_key=self.api_key)
 
         except ImportError:
@@ -159,9 +205,13 @@ class AIKeywordGenerator:
                 "Ngôn ngữ chỉ hỗ trợ vi hoặc en."
             )
 
-        if not isinstance(keyword_count, int) or not 1 <= keyword_count <= 15:
+        if (
+            isinstance(keyword_count, bool)
+            or not isinstance(keyword_count, int)
+            or not 1 <= keyword_count <= 20
+        ):
             raise KeywordGenerationError(
-                "Số lượng từ khóa phải từ 1 đến 15."
+                "Số lượng từ khóa phải từ 1 đến 20."
             )
 
         image_data, mime_type = _ImageValidator.validate(
@@ -214,32 +264,47 @@ class AIKeywordGenerator:
                 ]
             )
 
-            import json
-
             result = json.loads(response.output_text)
 
-            keywords = result.get("keywords", [])
-            description = result.get("description", "")
+            if not isinstance(result, dict):
+                raise ValueError("Kết quả AI không hợp lệ.")
+
+            keywords = result.get("keywords")
+            description = result.get("description")
 
             if not isinstance(keywords, list):
-                raise ValueError("Keywords không hợp lệ.")
+                raise ValueError("Danh sách từ khóa không hợp lệ.")
+
+            if not isinstance(description, str) or not description.strip():
+                raise ValueError("Mô tả ảnh không hợp lệ.")
 
             keywords = [
-                str(item).strip()
+                item.strip()
                 for item in keywords
-                if str(item).strip()
+                if isinstance(item, str) and item.strip()
             ]
 
             keywords = list(dict.fromkeys(keywords))
 
+            if len(keywords) < keyword_count:
+                raise ValueError(
+                    "AI trả về không đủ số lượng từ khóa."
+                )
+
             return {
                 "keywords": keywords[:keyword_count],
-                "description": str(description).strip(),
+                "description": description.strip(),
                 "model": self.model
             }
 
         except Exception as error:
-            raise KeywordGenerationError(
-                f"Không thể tạo từ khóa bằng AI: {error}"
-            ) from error
+            # Ghi lỗi chi tiết vào log nội bộ.
+            import logging
+            logging.exception(
+                "FE14.1: Không thể tạo từ khóa bằng OpenAI."
+            )
 
+            raise KeywordGenerationError(
+                "Không thể tạo từ khóa bằng AI. "
+                "Vui lòng thử lại sau."
+            ) from error

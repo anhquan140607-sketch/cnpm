@@ -2,3 +2,9 @@
 .env
 *.env
 
+# Visual Studio
+.vs/
+
+# Postman local data
+.postman/
+postman/

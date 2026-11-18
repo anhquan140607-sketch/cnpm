@@ -15,7 +15,14 @@ class AIKeywordService:
 
     def __init__(self):
         # Mặc định sử dụng DEMO để không phát sinh chi phí API.
-        self.mode = os.getenv("FE141_MODE", "demo").lower()
+        self.mode = os.getenv(
+            "FE141_MODE", "demo"
+        ).strip().lower()
+
+        if self.mode not in ("demo", "openai"):
+            raise KeywordGenerationError(
+                "FE141_MODE chỉ hỗ trợ demo hoặc openai."
+            )
 
     def generate_keywords(
         self,
@@ -31,13 +38,8 @@ class AIKeywordService:
         if self.mode == "demo":
             generator = DemoKeywordGenerator()
 
-        elif self.mode == "openai":
-            generator = AIKeywordGenerator()
-
         else:
-            raise KeywordGenerationError(
-                "FE141_MODE chỉ hỗ trợ demo hoặc openai."
-            )
+            generator = AIKeywordGenerator()
 
         # Thực hiện tạo từ khóa.
         result = generator.generate_keywords(
@@ -45,6 +47,12 @@ class AIKeywordService:
             language=language,
             keyword_count=keyword_count
         )
+
+        # Kiểm tra kết quả trả về.
+        if not isinstance(result, dict):
+            raise KeywordGenerationError(
+                "Kết quả tạo từ khóa không hợp lệ."
+            )
 
         # Bổ sung thông tin chế độ sử dụng.
         result["mode"] = self.mode
