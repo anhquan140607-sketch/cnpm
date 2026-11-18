@@ -1,0 +1,368 @@
+<!-- CNPM-86: Triển lãm Online | Thực hiện: Đinh Quang Thọ -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Triển Lãm Nhiếp Ảnh Phim | Film Contest Platform</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f0f1a;
+      color: #f0f0f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      border-bottom: 2px solid #e94560;
+      padding: 28px 40px;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 2.2rem;
+      letter-spacing: 2px;
+      color: #fff;
+      text-shadow: 0 0 20px rgba(233,69,96,0.5);
+    }
+    header p {
+      margin-top: 6px;
+      color: #aaa;
+      font-size: 0.95rem;
+      letter-spacing: 1px;
+    }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      background: #1a1a2e;
+      padding: 16px 40px;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+      border-bottom: 1px solid #2a2a4a;
+    }
+    .filter-bar label {
+      font-size: 0.85rem;
+      color: #aaa;
+      margin-right: 4px;
+    }
+    .filter-bar select {
+      background: #0f0f1a;
+      color: #f0f0f0;
+      border: 1px solid #e94560;
+      border-radius: 6px;
+      padding: 7px 14px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .filter-bar select:hover { border-color: #ff6b8a; }
+    .filter-bar button {
+      background: #e94560;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 20px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .filter-bar button:hover { background: #c73652; transform: translateY(-1px); }
+
+    /* ── GALLERY ── */
+    main {
+      flex: 1;
+      padding: 32px 40px;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      transition: transform 0.25s, box-shadow 0.25s;
+      background: #1a1a2e;
+    }
+    .card:hover { transform: translateY(-6px); box-shadow: 0 10px 32px rgba(233,69,96,0.35); }
+
+    .card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s;
+    }
+    .card:hover img { transform: scale(1.05); }
+
+    /* Award badge */
+    .badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(10,10,20,0.85);
+      border: 1px solid #e94560;
+      border-radius: 20px;
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #ffd700;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Overlay */
+    .overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: linear-gradient(transparent, rgba(10,10,25,0.92));
+      padding: 36px 16px 16px;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+    }
+    .card:hover .overlay { transform: translateY(0); }
+    .overlay h3 { font-size: 1rem; color: #fff; margin-bottom: 4px; }
+    .overlay p  { font-size: 0.82rem; color: #ccc; }
+
+    /* ── MODAL ── */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.78);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+      background: #1a1a2e;
+      border: 1px solid #e94560;
+      border-radius: 14px;
+      max-width: 680px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: fadeIn 0.25s ease;
+    }
+    @keyframes fadeIn { from { opacity:0; transform:scale(0.94); } to { opacity:1; transform:scale(1); } }
+
+    .modal img {
+      width: 100%;
+      max-height: 320px;
+      object-fit: cover;
+      border-radius: 14px 14px 0 0;
+    }
+    .modal-body { padding: 24px; }
+    .modal-body h2 { font-size: 1.4rem; margin-bottom: 8px; color: #fff; }
+    .modal-body .meta { font-size: 0.85rem; color: #aaa; margin-bottom: 14px; }
+    .modal-body .meta span { color: #e94560; font-weight: 600; }
+    .modal-body p.desc { font-size: 0.93rem; color: #ccc; line-height: 1.6; margin-bottom: 16px; }
+    .modal-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tag {
+      background: rgba(233,69,96,0.15);
+      border: 1px solid #e94560;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 0.8rem;
+      color: #e94560;
+    }
+    .modal-close {
+      display: block;
+      margin: 20px auto 0;
+      background: #e94560;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 32px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .modal-close:hover { background: #c73652; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #1a1a2e;
+      border-top: 1px solid #2a2a4a;
+      font-size: 0.82rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <h1>🎞️ Triển Lãm Nhiếp Ảnh Phim</h1>
+  <p>Tác phẩm đoạt giải — Film Contest Platform</p>
+</header>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <label for="filterContest">Cuộc thi:</label>
+  <select id="filterContest" onchange="applyFilter()">
+    <option value="">-- Tất cả --</option>
+    <option value="2026">Nhiếp Ảnh Phim 2026</option>
+    <option value="2025">Nhiếp Ảnh Phim 2025</option>
+  </select>
+
+  <label for="filterCategory">Hạng mục:</label>
+  <select id="filterCategory" onchange="applyFilter()">
+    <option value="">-- Tất cả --</option>
+    <option value="phongcanh">Phong cảnh</option>
+    <option value="chandung">Chân dung</option>
+    <option value="duongpho">Đường phố</option>
+  </select>
+
+  <button onclick="resetFilter()">Đặt lại</button>
+</div>
+
+<!-- GALLERY -->
+<main>
+  <div class="gallery-grid" id="gallery">
+
+    <div class="card" data-contest="2026" data-category="phongcanh"
+         onclick="openModal('Hoàng Hôn Mùa Thu','Nguyễn Văn A','Khoảnh khắc hoàng hôn trên cánh đồng lúa, chụp bằng film Kodak Portra 400.','🥇 Giải nhất','Phong cảnh','Nhiếp Ảnh Phim 2026','https://picsum.photos/seed/fall/680/400')">
+      <img src="https://picsum.photos/seed/fall/400/220" alt="Hoàng Hôn Mùa Thu" loading="lazy" />
+      <span class="badge">🥇 Giải nhất</span>
+      <div class="overlay">
+        <h3>Hoàng Hôn Mùa Thu</h3>
+        <p>Nguyễn Văn A</p>
+      </div>
+    </div>
+
+    <div class="card" data-contest="2026" data-category="chandung"
+         onclick="openModal('Ánh Mắt Thời Gian','Trần Thị B','Chân dung cụ già làng chài, film Ilford HP5, ánh sáng tự nhiên buổi sáng sớm.','🥈 Giải nhì','Chân dung','Nhiếp Ảnh Phim 2026','https://picsum.photos/seed/portrait/680/400')">
+      <img src="https://picsum.photos/seed/portrait/400/220" alt="Ánh Mắt Thời Gian" loading="lazy" />
+      <span class="badge">🥈 Giải nhì</span>
+      <div class="overlay">
+        <h3>Ánh Mắt Thời Gian</h3>
+        <p>Trần Thị B</p>
+      </div>
+    </div>
+
+    <div class="card" data-contest="2025" data-category="duongpho"
+         onclick="openModal('Phố Đêm Hà Nội','Lê Minh C','Góc phố cổ Hà Nội lúc nửa đêm, film Fujifilm Superia 400, phơi sáng dài.','🥉 Giải ba','Đường phố','Nhiếp Ảnh Phim 2025','https://picsum.photos/seed/street/680/400')">
+      <img src="https://picsum.photos/seed/street/400/220" alt="Phố Đêm Hà Nội" loading="lazy" />
+      <span class="badge">🥉 Giải ba</span>
+      <div class="overlay">
+        <h3>Phố Đêm Hà Nội</h3>
+        <p>Lê Minh C</p>
+      </div>
+    </div>
+
+    <div class="card" data-contest="2026" data-category="phongcanh"
+         onclick="openModal('Sương Sớm Tây Bắc','Phạm Thùy D','Núi rừng Tây Bắc trong màn sương buổi sáng, film Lomography Color 400.','🏅 Khuyến khích','Phong cảnh','Nhiếp Ảnh Phim 2026','https://picsum.photos/seed/mountain/680/400')">
+      <img src="https://picsum.photos/seed/mountain/400/220" alt="Sương Sớm Tây Bắc" loading="lazy" />
+      <span class="badge">🏅 Khuyến khích</span>
+      <div class="overlay">
+        <h3>Sương Sớm Tây Bắc</h3>
+        <p>Phạm Thùy D</p>
+      </div>
+    </div>
+
+    <div class="card" data-contest="2025" data-category="chandung"
+         onclick="openModal('Nụ Cười Trẻ Thơ','Hoàng Nam E','Khoảnh khắc hồn nhiên của trẻ em vùng cao, film Kodak Gold 200.','🥇 Giải nhất','Chân dung','Nhiếp Ảnh Phim 2025','https://picsum.photos/seed/children/680/400')">
+      <img src="https://picsum.photos/seed/children/400/220" alt="Nụ Cười Trẻ Thơ" loading="lazy" />
+      <span class="badge">🥇 Giải nhất</span>
+      <div class="overlay">
+        <h3>Nụ Cười Trẻ Thơ</h3>
+        <p>Hoàng Nam E</p>
+      </div>
+    </div>
+
+    <div class="card" data-contest="2025" data-category="duongpho"
+         onclick="openModal('Chợ Phiên Vùng Cao','Vũ Lan F','Phiên chợ sáng Chủ nhật tại Bắc Hà, film Cinestill 800T.','🥈 Giải nhì','Đường phố','Nhiếp Ảnh Phim 2025','https://picsum.photos/seed/market/680/400')">
+      <img src="https://picsum.photos/seed/market/400/220" alt="Chợ Phiên Vùng Cao" loading="lazy" />
+      <span class="badge">🥈 Giải nhì</span>
+      <div class="overlay">
+        <h3>Chợ Phiên Vùng Cao</h3>
+        <p>Vũ Lan F</p>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="closeModalOutside(event)">
+  <div class="modal" id="modal">
+    <img id="modalImg" src="" alt="" />
+    <div class="modal-body">
+      <h2 id="modalTitle"></h2>
+      <div class="meta">
+        Tác giả: <span id="modalAuthor"></span> &nbsp;|&nbsp;
+        Cuộc thi: <span id="modalContest"></span>
+      </div>
+      <p class="desc" id="modalDesc"></p>
+      <div class="modal-tags">
+        <span class="tag" id="modalAward"></span>
+        <span class="tag" id="modalCategory"></span>
+      </div>
+      <button class="modal-close" onclick="closeModal()">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>Film Contest Platform &copy; 2026</footer>
+
+<script>
+  // ── Filter logic ──
+  function applyFilter() {
+    const contest  = document.getElementById('filterContest').value;
+    const category = document.getElementById('filterCategory').value;
+    document.querySelectorAll('.card').forEach(card => {
+      const matchC = !contest  || card.dataset.contest  === contest;
+      const matchK = !category || card.dataset.category === category;
+      card.style.display = (matchC && matchK) ? '' : 'none';
+    });
+  }
+
+  function resetFilter() {
+    document.getElementById('filterContest').value  = '';
+    document.getElementById('filterCategory').value = '';
+    document.querySelectorAll('.card').forEach(c => c.style.display = '');
+  }
+
+  // ── Modal logic ──
+  function openModal(title, author, desc, award, category, contest, imgSrc) {
+    document.getElementById('modalTitle').textContent   = title;
+    document.getElementById('modalAuthor').textContent  = author;
+    document.getElementById('modalDesc').textContent    = desc;
+    document.getElementById('modalAward').textContent   = award;
+    document.getElementById('modalCategory').textContent = category;
+    document.getElementById('modalContest').textContent = contest;
+    document.getElementById('modalImg').src             = imgSrc;
+    document.getElementById('modalImg').alt             = title;
+    document.getElementById('modalBackdrop').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('modalBackdrop').classList.remove('open');
+  }
+
+  function closeModalOutside(e) {
+    if (e.target === document.getElementById('modalBackdrop')) closeModal();
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+
+</body>
+</html>

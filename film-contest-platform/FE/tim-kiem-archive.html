@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<!-- CNPM-87: Tìm kiếm Archive | Thực hiện: Đinh Quang Thọ -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🗄️ Kho Lưu Trữ Số - Film Contest Platform</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f2f5;
+    color: #2c3e50;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: #fff;
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.35);
+  }
+  header h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: .4px; }
+  header p  { font-size: .85rem; color: #bdc3c7; margin-top: 2px; }
+
+  /* ── SEARCH SECTION ── */
+  .search-section {
+    background: #2c3e50;
+    padding: 28px 32px 32px;
+  }
+  .search-box {
+    display: flex;
+    max-width: 760px;
+    margin: 0 auto;
+    gap: 0;
+  }
+  .search-box input {
+    flex: 1;
+    padding: 14px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px 0 0 8px;
+    outline: none;
+    color: #2c3e50;
+  }
+  .search-box input::placeholder { color: #95a5a6; }
+  .search-box button {
+    padding: 14px 26px;
+    background: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s;
+    white-space: nowrap;
+  }
+  .search-box button:hover { background: #2980b9; }
+
+  /* ── FILTER BAR ── */
+  .filter-bar {
+    background: #fff;
+    border-bottom: 1px solid #dde1e7;
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .filter-label { font-size: .78rem; font-weight: 700; color: #7f8c8d; text-transform: uppercase; letter-spacing: .6px; }
+  .filter-group { display: flex; align-items: center; gap: 8px; }
+  .filter-group label { font-size: .85rem; color: #555; white-space: nowrap; }
+  .filter-group select {
+    padding: 7px 12px;
+    border: 1.5px solid #dde1e7;
+    border-radius: 6px;
+    font-size: .85rem;
+    color: #2c3e50;
+    background: #fff;
+    cursor: pointer;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .filter-group select:focus { border-color: #3498db; }
+  .filter-divider { width: 1px; height: 24px; background: #dde1e7; }
+  .btn-clear {
+    margin-left: auto;
+    padding: 7px 14px;
+    background: transparent;
+    border: 1.5px solid #e74c3c;
+    color: #e74c3c;
+    border-radius: 6px;
+    font-size: .82rem;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .btn-clear:hover { background: #e74c3c; color: #fff; }
+
+  /* ── MAIN LAYOUT ── */
+  .main { max-width: 1100px; margin: 0 auto; padding: 24px 24px 48px; }
+
+  /* ── RESULTS HEADER ── */
+  .results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .results-count { font-size: .9rem; color: #7f8c8d; }
+  .results-count strong { color: #2c3e50; }
+
+  /* ── RESULT LIST ── */
+  .result-list { display: flex; flex-direction: column; gap: 14px; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid #e8ecf0;
+    display: flex;
+    gap: 18px;
+    padding: 18px 20px;
+    transition: box-shadow .2s, border-color .2s;
+    align-items: flex-start;
+  }
+  .result-card:hover { box-shadow: 0 4px 18px rgba(52,152,219,.13); border-color: #3498db; }
+
+  .result-thumb {
+    width: 88px;
+    height: 72px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: rgba(255,255,255,.85);
+    overflow: hidden;
+  }
+
+  .result-body { flex: 1; min-width: 0; }
+  .result-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .result-meta { font-size: .82rem; color: #7f8c8d; display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; }
+  .result-meta span { display: flex; align-items: center; gap: 4px; }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: .74rem;
+    font-weight: 700;
+    letter-spacing: .3px;
+  }
+  .badge-gold   { background: #fff3cd; color: #856404; border: 1px solid #ffc107; }
+  .badge-silver { background: #e9ecef; color: #495057; border: 1px solid #adb5bd; }
+  .badge-bronze { background: #fde8d8; color: #9c4a1a; border: 1px solid #fd7e14; }
+  .badge-none   { background: #e8f5e9; color: #2e7d32; border: 1px solid #81c784; }
+
+  .result-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; flex-direction: column; justify-content: center; }
+  .btn-detail {
+    padding: 9px 18px;
+    background: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    font-size: .85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s;
+    white-space: nowrap;
+  }
+  .btn-detail:hover { background: #2980b9; }
+
+  .score-chip {
+    font-size: .8rem;
+    font-weight: 700;
+    color: #2c3e50;
+    background: #eaf4fb;
+    border-radius: 20px;
+    padding: 4px 10px;
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  /* ── NO RESULTS ── */
+  .no-results {
+    text-align: center;
+    padding: 60px 20px;
+    color: #95a5a6;
+    display: none;
+  }
+  .no-results .icon { font-size: 3rem; margin-bottom: 12px; }
+  .no-results p { font-size: 1rem; }
+
+  /* ── PAGINATION ── */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+  .pagination button {
+    min-width: 38px;
+    height: 38px;
+    padding: 0 10px;
+    border: 1.5px solid #dde1e7;
+    background: #fff;
+    color: #2c3e50;
+    border-radius: 7px;
+    font-size: .88rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all .15s;
+  }
+  .pagination button:hover { border-color: #3498db; color: #3498db; }
+  .pagination button.active { background: #3498db; border-color: #3498db; color: #fff; font-weight: 700; }
+  .pagination button.dots { border: none; background: none; color: #95a5a6; cursor: default; }
+  .pagination button:disabled { opacity: .4; cursor: not-allowed; }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+  <div>
+    <h1>🗄️ Kho Lưu Trữ Số</h1>
+    <p>Film Contest Platform — Tra cứu tác phẩm từ các cuộc thi đã kết thúc</p>
+  </div>
+</header>
+
+<!-- ── SEARCH SECTION ── -->
+<div class="search-section">
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="🔍  Tìm kiếm theo tên tác phẩm, tác giả, cuộc thi..." oninput="applyFilters()">
+    <button onclick="applyFilters()">🔍 Tìm kiếm</button>
+  </div>
+</div>
+
+<!-- ── FILTER BAR ── -->
+<div class="filter-bar">
+  <span class="filter-label">Lọc:</span>
+
+  <div class="filter-group">
+    <label>📅 Năm:</label>
+    <select id="filterYear" onchange="applyFilters()">
+      <option value="">Tất cả</option>
+      <option value="2026">2026</option>
+      <option value="2025">2025</option>
+      <option value="2024">2024</option>
+    </select>
+  </div>
+
+  <div class="filter-divider"></div>
+
+  <div class="filter-group">
+    <label>🏷️ Hạng mục:</label>
+    <select id="filterCategory" onchange="applyFilters()">
+      <option value="">Tất cả</option>
+      <option value="Chân Dung">Chân Dung</option>
+      <option value="Phong Cảnh">Phong Cảnh</option>
+      <option value="Đường Phố">Đường Phố</option>
+      <option value="Kiến Trúc">Kiến Trúc</option>
+      <option value="Thiên Nhiên">Thiên Nhiên</option>
+    </select>
+  </div>
+
+  <div class="filter-divider"></div>
+
+  <div class="filter-group">
+    <label>🏆 Giải thưởng:</label>
+    <select id="filterAward" onchange="applyFilters()">
+      <option value="">Tất cả</option>
+      <option value="yes">Có giải</option>
+      <option value="no">Không giải</option>
+    </select>
+  </div>
+
+  <div class="filter-divider"></div>
+
+  <div class="filter-group">
+    <label>↕️ Sắp xếp:</label>
+    <select id="filterSort" onchange="applyFilters()">
+      <option value="newest">Mới nhất</option>
+      <option value="score">Điểm cao nhất</option>
+      <option value="title">Tên A-Z</option>
+    </select>
+  </div>
+
+  <button class="btn-clear" onclick="clearFilters()">✕ Xóa bộ lọc</button>
+</div>
+
+<!-- ── MAIN CONTENT ── -->
+<div class="main">
+  <div class="results-header">
+    <div class="results-count">Hiển thị <strong id="resultCount">5</strong> tác phẩm</div>
+  </div>
+
+  <div class="result-list" id="resultList"></div>
+  <div class="no-results" id="noResults">
+    <div class="icon">🔍</div>
+    <p>Không tìm thấy tác phẩm phù hợp.<br>Hãy thử từ khóa hoặc bộ lọc khác.</p>
+  </div>
+
+  <!-- PAGINATION -->
+  <div class="pagination">
+    <button disabled>‹ Trước</button>
+    <button class="active">1</button>
+    <button>2</button>
+    <button>3</button>
+    <button class="dots">...</button>
+    <button>10</button>
+    <button>Sau ›</button>
+  </div>
+</div>
+
+<script>
+// ── SAMPLE DATA ──
+const archiveData = [
+  {
+    id: 1,
+    title: "Ánh Bình Minh Trên Đỉnh Fansipan",
+    author: "Nguyễn Văn A",
+    contest: "Cuộc Thi Nhiếp Ảnh 2024",
+    year: "2024",
+    category: "Phong Cảnh",
+    award: "Giải Nhất",
+    score: 9.5,
+    emoji: "🏔️",
+    gradient: "linear-gradient(135deg,#667eea,#764ba2)",
+    archived: "15/12/2024"
+  },
+  {
+    id: 2,
+    title: "Nụ Cười Trẻ Thơ Vùng Cao",
+    author: "Trần Thị B",
+    contest: "Nhiếp Ảnh Nghệ Thuật 2024",
+    year: "2024",
+    category: "Chân Dung",
+    award: "Giải Nhì",
+    score: 9.1,
+    emoji: "👦",
+    gradient: "linear-gradient(135deg,#f093fb,#f5576c)",
+    archived: "20/12/2024"
+  },
+  {
+    id: 3,
+    title: "Phố Cổ Hội An Về Đêm",
+    author: "Lê Minh C",
+    contest: "Cuộc Thi Ảnh Đô Thị 2025",
+    year: "2025",
+    category: "Đường Phố",
+    award: "Giải Ba",
+    score: 8.7,
+    emoji: "🏮",
+    gradient: "linear-gradient(135deg,#4facfe,#00f2fe)",
+    archived: "05/03/2025"
+  },
+  {
+    id: 4,
+    title: "Kiến Trúc Nhà Thờ Đức Bà",
+    author: "Phạm Thị D",
+    contest: "Nhiếp Ảnh Kiến Trúc 2025",
+    year: "2025",
+    category: "Kiến Trúc",
+    award: "",
+    score: 8.2,
+    emoji: "⛪",
+    gradient: "linear-gradient(135deg,#43e97b,#38f9d7)",
+    archived: "10/06/2025"
+  },
+  {
+    id: 5,
+    title: "Rừng Tre Thanh Hóa",
+    author: "Hoàng Văn E",
+    contest: "Cuộc Thi Ảnh Thiên Nhiên 2026",
+    year: "2026",
+    category: "Thiên Nhiên",
+    award: "Giải Khuyến Khích",
+    score: 7.9,
+    emoji: "🎋",
+    gradient: "linear-gradient(135deg,#fa709a,#fee140)",
+    archived: "02/09/2026"
+  }
+];
+
+function badgeClass(award) {
+  if (!award) return 'badge-none';
+  if (award.includes('Nhất')) return 'badge-gold';
+  if (award.includes('Nhì'))  return 'badge-silver';
+  if (award.includes('Ba'))   return 'badge-bronze';
+  return 'badge-none';
+}
+
+function badgeLabel(award) {
+  return award || 'Tham dự';
+}
+
+function renderCard(item) {
+  return `
+    <div class="result-card" data-id="${item.id}">
+      <div class="result-thumb" style="background:${item.gradient}">${item.emoji}</div>
+      <div class="result-body">
+        <div class="result-title">${item.title}</div>
+        <div class="result-meta">
+          <span>👤 ${item.author}</span>
+          <span>🏆 ${item.contest}</span>
+          <span>📅 ${item.year}</span>
+          <span>🏷️ ${item.category}</span>
+        </div>
+        <span class="badge ${badgeClass(item.award)}">${badgeLabel(item.award)}</span>
+      </div>
+      <div class="result-actions">
+        <div class="score-chip">⭐ ${item.score.toFixed(1)}</div>
+        <button class="btn-detail" onclick="viewDetail(${item.id})">Xem chi tiết</button>
+      </div>
+    </div>`;
+}
+
+function applyFilters() {
+  const q        = document.getElementById('searchInput').value.toLowerCase().trim();
+  const year     = document.getElementById('filterYear').value;
+  const category = document.getElementById('filterCategory').value;
+  const award    = document.getElementById('filterAward').value;
+  const sort     = document.getElementById('filterSort').value;
+
+  let results = archiveData.filter(item => {
+    const matchQ = !q || [item.title, item.author, item.contest, item.category]
+                          .some(f => f.toLowerCase().includes(q));
+    const matchYear     = !year     || item.year === year;
+    const matchCategory = !category || item.category === category;
+    const matchAward    = !award    || (award === 'yes' ? !!item.award : !item.award);
+    return matchQ && matchYear && matchCategory && matchAward;
+  });
+
+  if (sort === 'score')  results.sort((a,b) => b.score - a.score);
+  if (sort === 'title')  results.sort((a,b) => a.title.localeCompare(b.title, 'vi'));
+  if (sort === 'newest') results.sort((a,b) => b.id - a.id);
+
+  const list = document.getElementById('resultList');
+  const none = document.getElementById('noResults');
+  document.getElementById('resultCount').textContent = results.length;
+
+  if (results.length === 0) {
+    list.innerHTML = '';
+    none.style.display = 'block';
+  } else {
+    none.style.display = 'none';
+    list.innerHTML = results.map(renderCard).join('');
+  }
+}
+
+function clearFilters() {
+  document.getElementById('searchInput').value  = '';
+  document.getElementById('filterYear').value     = '';
+  document.getElementById('filterCategory').value = '';
+  document.getElementById('filterAward').value    = '';
+  document.getElementById('filterSort').value     = 'newest';
+  applyFilters();
+}
+
+function viewDetail(id) {
+  const item = archiveData.find(i => i.id === id);
+  if (item) alert(`Chi tiết tác phẩm #${id}\n\nTên: ${item.title}\nTác giả: ${item.author}\nCuộc thi: ${item.contest}\nHạng mục: ${item.category}\nGiải: ${item.award || 'Tham dự'}\nĐiểm: ${item.score}`);
+}
+
+// Initial render
+applyFilters();
+</script>
+</body>
+</html>
